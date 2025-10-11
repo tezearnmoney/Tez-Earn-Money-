@@ -13,254 +13,171 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <style>
-        /* Professional Premium Wheel Styling */
+        /* Professional Premium 3D Wheel Styling */
         .wheel-container { 
             position: relative; 
-            width: 280px; 
-            height: 280px; 
+            width: 260px; 
+            height: 260px; 
             margin: 20px auto;
-            perspective: 1200px;
-            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.15));
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));
         }
         @media (max-width: 380px) {
             .wheel-container {
-                width: 250px;
-                height: 250px;
+                width: 240px;
+                height: 240px;
             }
         }
+        
+        /* Simple Red Arrow Pointer */
+        .wheel-pointer { 
+            position: absolute; 
+            top: -10px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 30;
+            animation: arrowPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes arrowPulse {
+            0%, 100% { 
+                transform: translateX(-50%) translateY(0px); 
+                filter: drop-shadow(0 4px 8px rgba(220, 20, 60, 0.5));
+            }
+            50% { 
+                transform: translateX(-50%) translateY(-3px); 
+                filter: drop-shadow(0 6px 12px rgba(220, 20, 60, 0.7));
+            }
+        }
+        
+        .arrow-body {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 30px solid #DC143C;
+            filter: drop-shadow(0 4px 8px rgba(220, 20, 60, 0.4));
+        }
+        
+        /* Professional 3D Wheel with Perfect Segments */
         .wheel { 
             width: 100%; 
             height: 100%; 
             border-radius: 50%; 
-            background: conic-gradient(
-                from 0deg,
-                #FFD700 0deg 60deg, 
-                #FF6B35 60deg 120deg, 
-                #4ECDC4 120deg 180deg, 
-                #95E1D3 180deg 240deg, 
-                #F38181 240deg 300deg, 
-                #AA96DA 300deg 360deg
-            ); 
-            transition: transform 4s cubic-bezier(0.2, 0.8, 0.3, 0.95); 
-            box-shadow: 
-                0 0 0 12px #fff,
-                0 0 0 16px rgba(255, 215, 0, 0.3),
-                0 0 0 20px #fff,
-                0 25px 50px rgba(0,0,0,0.3),
-                inset 0 0 30px rgba(255,255,255,0.9),
-                inset 0 0 60px rgba(255, 215, 0, 0.2);
             position: relative;
-            overflow: hidden;
+            transition: transform 4s cubic-bezier(0.2, 0.8, 0.3, 0.95); 
             transform-style: preserve-3d;
         }
-        .wheel::before {
-            content: '';
-            position: absolute;
-            top: 18px;
-            left: 18px;
-            right: 18px;
-            bottom: 18px;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, transparent 50%),
-                linear-gradient(145deg, #ffffff, #f8f9fa);
-            border-radius: 50%;
-            z-index: 1;
-            box-shadow: 
-                inset 0 5px 15px rgba(0,0,0,0.1),
-                inset 0 -5px 10px rgba(255,255,255,0.5);
-        }
+        
+        
+        /* Inner White Ring */
         .wheel::after {
             content: '';
             position: absolute;
-            top: 5%;
-            left: 5%;
-            width: 30%;
-            height: 30%;
-            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%);
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: white;
             border-radius: 50%;
-            z-index: 2;
-            filter: blur(15px);
+            z-index: -1;
+            box-shadow: 0 0 25px rgba(0,0,0,0.2);
         }
         
-        /* Premium Wheel Pointer - FIXED POSITION */
-        .wheel-pointer { 
-            position: absolute; 
-            top: -25px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 0; 
-            height: 0; 
-            border-left: 20px solid transparent; 
-            border-right: 20px solid transparent; 
-            border-top: 35px solid #DC143C;
-            z-index: 20;
-            filter: drop-shadow(0 5px 10px rgba(220, 20, 60, 0.5));
-            animation: pointerPulse 2s ease-in-out infinite;
-        }
-        @keyframes pointerPulse {
-            0%, 100% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.05); }
-        }
-        .wheel-pointer::before {
-            content: '';
-            position: absolute;
-            top: -35px;
-            left: -20px;
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #FF1744 0%, #DC143C 50%, #B71C1C 100%);
+        /* SVG Wheel Canvas */
+        .wheel-svg {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             box-shadow: 
-                0 0 15px rgba(220, 20, 60, 0.6),
-                inset 0 2px 5px rgba(255,255,255,0.3),
-                inset 0 -2px 5px rgba(0,0,0,0.3);
-        }
-        .wheel-pointer::after {
-            content: '▼';
-            position: absolute;
-            top: -30px;
-            left: -8px;
-            font-size: 16px;
-            color: white;
-            z-index: 1;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                0 0 0 5px rgba(255,255,255,0.8),
+                0 20px 40px rgba(0,0,0,0.3),
+                inset 0 5px 20px rgba(255,255,255,0.5);
         }
         
-        /* Premium Wheel Segments with Attractive Number Colors */
+        /* Segment Styling */
         .wheel-segment {
-            position: absolute;
-            width: 50%;
-            height: 50%;
-            transform-origin: bottom right;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            transition: opacity 0.2s;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        .wheel-segment:hover {
+            opacity: 0.9;
+        }
+        
+        /* Segment Text Styling */
+        .segment-text {
+            font-family: 'Arial Black', sans-serif;
             font-weight: 900;
-            font-size: 22px;
-            z-index: 2;
+            font-size: 28px;
+            fill: #1a1a2e;
+            stroke: #ffffff;
+            stroke-width: 2;
+            paint-order: stroke fill;
             text-shadow: 
-                0 2px 4px rgba(0,0,0,0.8),
-                0 0 10px rgba(255,255,255,0.3),
-                2px 2px 8px rgba(0,0,0,0.5);
+                0 2px 4px rgba(0,0,0,0.3),
+                0 1px 2px rgba(0,0,0,0.2);
             letter-spacing: 1px;
-        }
-
-        /* Individual segment number colors - Premium Gold Theme */
-        .wheel-segment:nth-child(1) { 
-            color: #1a1a2e;
-            text-shadow: 
-                0 0 10px rgba(255, 215, 0, 0.8),
-                2px 2px 4px rgba(0,0,0,0.9);
-        }
-        .wheel-segment:nth-child(2) { 
-            color: #fff;
-            text-shadow: 
-                0 0 10px rgba(255, 107, 53, 0.8),
-                2px 2px 4px rgba(0,0,0,0.9);
-        }
-        .wheel-segment:nth-child(3) { 
-            color: #fff;
-            text-shadow: 
-                0 0 10px rgba(78, 205, 196, 0.8),
-                2px 2px 4px rgba(0,0,0,0.9);
-        }
-        .wheel-segment:nth-child(4) { 
-            color: #1a1a2e;
-            text-shadow: 
-                0 0 10px rgba(149, 225, 211, 0.8),
-                2px 2px 4px rgba(0,0,0,0.9);
-        }
-        .wheel-segment:nth-child(5) { 
-            color: #fff;
-            text-shadow: 
-                0 0 10px rgba(243, 129, 129, 0.8),
-                2px 2px 4px rgba(0,0,0,0.9);
-        }
-        .wheel-segment:nth-child(6) { 
-            color: #fff;
-            text-shadow: 
-                0 0 10px rgba(170, 150, 218, 0.8),
-                2px 2px 4px rgba(0,0,0,0.9);
         }
         
         @media (max-width: 380px) {
-            .wheel-segment {
-                font-size: 19px;
+            .segment-text {
+                font-size: 24px;
             }
         }
         
-        /* Premium Segment Borders */
-        .wheel-segment::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 3px;
-            height: 100%;
-            background: linear-gradient(to bottom, 
-                rgba(255,255,255,0.9) 0%,
-                rgba(255,215,0,0.6) 50%,
-                rgba(255,255,255,0.9) 100%);
-            transform-origin: center right;
-            box-shadow: 0 0 5px rgba(255,215,0,0.5);
+        /* Segment Border Lines */
+        .segment-divider {
+            stroke: rgba(255, 255, 255, 0.4);
+            stroke-width: 2;
+            filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.4));
         }
         
-        /* Premium Center Circle */
+        /* Premium Stationary Center Circle - Does not rotate with wheel */
         .wheel-center {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 70px;
-            height: 70px;
+            width: 55px;
+            height: 55px;
             background: 
-                linear-gradient(145deg, #FFD700, #FFA500),
-                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, transparent 70%);
+                linear-gradient(135deg, #667eea 0%, #764ba2 100%),
+                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 70%);
             border-radius: 50%;
-            z-index: 3;
+            z-index: 10;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 
-                0 0 0 8px #fff,
-                0 0 0 12px rgba(255,215,0,0.4),
-                0 0 25px rgba(255,215,0,0.6),
-                inset 0 3px 10px rgba(255,255,255,0.5),
-                inset 0 -3px 10px rgba(0,0,0,0.3);
-            color: #1a1a2e;
-            font-weight: 900;
-            font-size: 13px;
-            text-align: center;
-            line-height: 1.3;
-            text-shadow: 
-                0 1px 2px rgba(255,255,255,0.8),
-                0 2px 4px rgba(0,0,0,0.2);
+                0 0 0 6px #ffffff,
+                0 0 0 9px rgba(102, 126, 234, 0.3),
+                0 0 20px rgba(102, 126, 234, 0.5),
+                inset 0 2px 8px rgba(255,255,255,0.4),
+                inset 0 -2px 8px rgba(0,0,0,0.25);
             animation: centerPulse 3s ease-in-out infinite;
-            letter-spacing: 0.5px;
         }
         @keyframes centerPulse {
             0%, 100% { 
                 box-shadow: 
-                    0 0 0 8px #fff,
-                    0 0 0 12px rgba(255,215,0,0.4),
-                    0 0 25px rgba(255,215,0,0.6),
-                    inset 0 3px 10px rgba(255,255,255,0.5),
-                    inset 0 -3px 10px rgba(0,0,0,0.3);
+                    0 0 0 6px #ffffff,
+                    0 0 0 9px rgba(102, 126, 234, 0.3),
+                    0 0 20px rgba(102, 126, 234, 0.5),
+                    inset 0 2px 8px rgba(255,255,255,0.4),
+                    inset 0 -2px 8px rgba(0,0,0,0.25);
             }
             50% { 
                 box-shadow: 
-                    0 0 0 8px #fff,
-                    0 0 0 12px rgba(255,215,0,0.6),
-                    0 0 35px rgba(255,215,0,0.8),
-                    inset 0 3px 10px rgba(255,255,255,0.5),
-                    inset 0 -3px 10px rgba(0,0,0,0.3);
+                    0 0 0 6px #ffffff,
+                    0 0 0 9px rgba(102, 126, 234, 0.5),
+                    0 0 30px rgba(102, 126, 234, 0.7),
+                    inset 0 2px 8px rgba(255,255,255,0.4),
+                    inset 0 -2px 8px rgba(0,0,0,0.25);
             }
         }
         @media (max-width: 380px) {
             .wheel-center {
-                width: 60px;
-                height: 60px;
-                font-size: 11px;
+                width: 50px;
+                height: 50px;
             }
         }
         
@@ -1026,18 +943,99 @@
                             Lucky Spin Wheel
                             <i class="fas fa-star text-yellow-500 ml-2"></i>
                         </h3>
-                        <p class="text-gray-600 mb-8 text-sm" id="spin-cooldown-text">Spins today: 0/5</p>
+                        <p class="text-gray-600 mb-3 text-sm" id="spin-cooldown-text">Spins today: 0/5</p>
                         
                         <div class="wheel-container">
-                            <!-- Wheel Pointer - MOVED OUTSIDE THE WHEEL -->
-                            <div class="wheel-pointer"></div>
-                            
-                            <div id="wheel" class="wheel">
-                                <!-- Wheel segments will be dynamically generated -->
-                                <div class="wheel-center">
-                                    SPIN<br>TO<br>WIN
-                                </div>
+                            <!-- Premium 3D Arrow Pointer -->
+                            <div class="wheel-pointer">
+                                <div class="arrow-body"></div>
                             </div>
+                            
+                            <!-- SVG-Based Wheel for Perfect Segments -->
+                            <div id="wheel" class="wheel">
+                                <svg class="wheel-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <!-- Gradients for each segment -->
+                                         <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                                        </linearGradient>
+                                        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+                                        </linearGradient>
+                                        <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+                                        </linearGradient>
+                                        <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#43e97b;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#38f9d7;stop-opacity:1" />
+                                        </linearGradient>
+                                        <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#fa709a;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#fee140;stop-opacity:1" />
+                                        </linearGradient>
+                                        <linearGradient id="grad6" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#30cfd0;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#330867;stop-opacity:1" />
+                                        </linearGradient>
+                                        
+                                        <!-- 3D Effect Filter -->
+                                        <filter id="shadow">
+                                            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+                                            <feOffset dx="2" dy="2" result="offsetblur"/>
+                                            <feComponentTransfer>
+                                                <feFuncA type="linear" slope="0.5"/>
+                                            </feComponentTransfer>
+                                            <feMerge>
+                                                <feMergeNode/>
+                                                <feMergeNode in="SourceGraphic"/>
+                                            </feMerge>
+                                        </filter>
+                                    </defs>
+                                    
+                                    <!-- 6 Equal Segments (60 degrees each) -->
+                                    <g id="wheel-segments">
+                                        <!-- Segment 1 -->
+                                        <path d="M100,100 L100,10 A90,90 0 0,1 177.94,50 Z" fill="url(#grad1)" class="wheel-segment" filter="url(#shadow)"/>
+                                        <text x="130" y="50" class="segment-text" text-anchor="middle" dominant-baseline="middle">10</text>
+                                        
+                                        <!-- Segment 2 -->
+                                        <path d="M100,100 L177.94,50 A90,90 0 0,1 177.94,150 Z" fill="url(#grad2)" class="wheel-segment" filter="url(#shadow)"/>
+                                        <text x="155" y="100" class="segment-text" text-anchor="middle" dominant-baseline="middle">20</text>
+                                        
+                                        <!-- Segment 3 -->
+                                        <path d="M100,100 L177.94,150 A90,90 0 0,1 100,190 Z" fill="url(#grad3)" class="wheel-segment" filter="url(#shadow)"/>
+                                        <text x="130" y="150" class="segment-text" text-anchor="middle" dominant-baseline="middle">30</text>
+                                        
+                                        <!-- Segment 4 -->
+                                        <path d="M100,100 L100,190 A90,90 0 0,1 22.06,150 Z" fill="url(#grad4)" class="wheel-segment" filter="url(#shadow)"/>
+                                        <text x="70" y="150" class="segment-text" text-anchor="middle" dominant-baseline="middle">40</text>
+                                        
+                                        <!-- Segment 5 -->
+                                        <path d="M100,100 L22.06,150 A90,90 0 0,1 22.06,50 Z" fill="url(#grad5)" class="wheel-segment" filter="url(#shadow)"/>
+                                        <text x="45" y="100" class="segment-text" text-anchor="middle" dominant-baseline="middle">50</text>
+                                        
+                                        <!-- Segment 6 -->
+                                        <path d="M100,100 L22.06,50 A90,90 0 0,1 100,10 Z" fill="url(#grad6)" class="wheel-segment" filter="url(#shadow)"/>
+                                        <text x="70" y="50" class="segment-text" text-anchor="middle" dominant-baseline="middle">60</text>
+                                    </g>
+                                    
+                                    <!-- Segment Divider Lines -->
+                                    <line x1="100" y1="100" x2="100" y2="10" class="segment-divider"/>
+                                    <line x1="100" y1="100" x2="177.94" y2="50" class="segment-divider"/>
+                                    <line x1="100" y1="100" x2="177.94" y2="150" class="segment-divider"/>
+                                    <line x1="100" y1="100" x2="100" y2="190" class="segment-divider"/>
+                                    <line x1="100" y1="100" x2="22.06" y2="150" class="segment-divider"/>
+                                    <line x1="100" y1="100" x2="22.06" y2="50" class="segment-divider"/>
+                                    
+                                    <!-- Center Circle - Blank, stationary center added via CSS -->
+                                    <circle cx="100" cy="100" r="20" fill="rgba(255,255,255,0.1)" stroke="#fff" stroke-width="3"/>
+                                </svg>
+                            </div>
+                            <!-- Stationary Center Circle - Does not rotate -->
+                            <div class="wheel-center"></div>
                             <div class="wheel-glow"></div>
                             <div class="wheel-stand"></div>
                         </div>
@@ -1285,9 +1283,9 @@
                     <!-- Profile Options -->
                     <div class="space-y-3 pt-4 border-t border-gray-300">
                         <div class="grid grid-cols-2 gap-3">
-                            <button onclick="resetPassword()" class="text-blue-500 hover:bg-blue-50 p-3 rounded-lg flex items-center justify-center text-sm font-semibold transition-all">
-                                <i class="fas fa-key mr-2"></i> Change Password
-                            </button>
+                            <a href="mailto:rgstudiopvtltd@gmail.com" class="text-blue-500 hover:bg-blue-50 p-3 rounded-lg flex items-center justify-center text-sm font-semibold transition-all">
+                                <i class="fas fa-headset mr-2"></i> Support
+                            </a>
                             <button onclick="showAbout()" class="text-green-500 hover:bg-green-50 p-3 rounded-lg flex items-center justify-center text-sm font-semibold transition-all">
                                 <i class="fas fa-info-circle mr-2"></i> About
                             </button>
@@ -1941,46 +1939,65 @@
             }
         }
 
-        // ✅ NAYA FUNCTION: Starting bonus dene ke liye
+        // ✅ NAYA FUNCTION: Starting bonus dene ke liye - Admin panel se values read karta hai
         function giveStartingBonus(userId, userData) {
-            const startingBonusPoints = 150;
-            const startingBonusBalance = 15.00;
+            console.log('🎁 Fetching starting bonus settings from admin panel...');
             
-            console.log('🎁 Giving starting bonus to new user:', userId);
-            
-            db.collection('users').doc(userId).update({
-                points: startingBonusPoints,
-                balance: startingBonusBalance,
-                hasReceivedStartingBonus: true, // ✅ Mark as bonus given
-                startingBonusGivenAt: firebase.firestore.FieldValue.serverTimestamp(),
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                console.log('✅ Starting bonus given successfully');
-                
-                // Update local state
-                userData.points = startingBonusPoints;
-                userData.balance = startingBonusBalance;
-                updateDisplays();
-                
-                // Add to transaction history
-                const transactionList = document.getElementById('transaction-list');
-                const li = document.createElement('li');
-                li.className = 'p-3 rounded-lg bg-white border border-gray-200 flex justify-between items-center';
-                li.innerHTML = `
-                    <div class="flex-1">
-                        <p class="font-semibold text-gray-800 text-sm">🎁 Welcome Bonus!</p>
-                        <p class="text-gray-500 text-xs mt-1">${new Date().toISOString().split('T')[0]}</p>
-                    </div>
-                    <span class="text-green-500 font-bold text-sm ml-2">+${startingBonusPoints} pts</span>
-                `;
-                if (transactionList) {
-                    transactionList.prepend(li);
-                }
-                
-                showToast(`🎉 Welcome! You received ${startingBonusPoints} points (₹${startingBonusBalance}) starting bonus!`, 'success');
-            }).catch((error) => {
-                console.error('❌ Error giving starting bonus:', error);
-            });
+            // ✅ Admin panel ke settings se bonus values fetch karo
+            db.collection('settings').doc('app').get()
+                .then((settingsDoc) => {
+                    let startingBonusPoints = 150; // Default value
+                    let startingBonusBalance = 15.00; // Default value
+                    
+                    // ✅ Agar admin ne settings set ki hain to unhe use karo
+                    if (settingsDoc.exists) {
+                        const settings = settingsDoc.data();
+                        startingBonusPoints = settings.startingBonusPoints || 150;
+                        startingBonusBalance = settings.startingBonusCash || 15.00;
+                        console.log('✅ Admin settings fetched:', { startingBonusPoints, startingBonusBalance });
+                    } else {
+                        console.log('⚠️ Admin settings not found, using default values');
+                    }
+                    
+                    console.log('🎁 Giving starting bonus to new user:', userId);
+                    
+                    // ✅ User ko bonus do
+                    return db.collection('users').doc(userId).update({
+                        points: startingBonusPoints,
+                        balance: startingBonusBalance,
+                        hasReceivedStartingBonus: true,
+                        startingBonusGivenAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        console.log('✅ Starting bonus given successfully');
+                        
+                        // Update local state
+                        userData.points = startingBonusPoints;
+                        userData.balance = startingBonusBalance;
+                        updateDisplays();
+                        
+                        // Add to transaction history
+                        const transactionList = document.getElementById('transaction-list');
+                        const li = document.createElement('li');
+                        li.className = 'p-3 rounded-lg bg-white border border-gray-200 flex justify-between items-center';
+                        li.innerHTML = `
+                            <div class="flex-1">
+                                <p class="font-semibold text-gray-800 text-sm">🎁 Welcome Bonus!</p>
+                                <p class="text-gray-500 text-xs mt-1">${new Date().toISOString().split('T')[0]}</p>
+                            </div>
+                            <span class="text-green-500 font-bold text-sm ml-2">+${startingBonusPoints} pts</span>
+                        `;
+                        if (transactionList) {
+                            transactionList.prepend(li);
+                        }
+                        
+                        showToast(`🎉 Welcome! You received ${startingBonusPoints} points (₹${startingBonusBalance}) starting bonus!`, 'success');
+                    });
+                })
+                .catch((error) => {
+                    console.error('❌ Error giving starting bonus:', error);
+                    showToast('Error giving starting bonus', 'error');
+                });
         }
 
         // ✅ FIXED: Load user data function - Starting bonus control
@@ -2219,39 +2236,25 @@
             });
         }
 
-        // ✅ YEH NAYA FUNCTION - Wheel segments update karna
+        // ✅ YEH NAYA FUNCTION - Wheel segments update karna (SVG VERSION)
         function updateWheelSegments(points) {
             const wheel = document.getElementById('wheel');
             if (!wheel) return;
             
             console.log('🔄 Updating wheel segments with points:', points);
             
-            // Clear existing segments
-            const existingSegments = wheel.querySelectorAll('.wheel-segment');
-            existingSegments.forEach(segment => segment.remove());
+            // Get all SVG text elements (segment numbers)
+            const textElements = wheel.querySelectorAll('.segment-text');
             
-            // Calculate angle per segment
-            const segmentsCount = points.length;
-            const anglePerSegment = 360 / segmentsCount;
-            
-            // Premium color palette for wheel segments
-            const colors = [
-                '#FFD700', '#FF6B35', '#4ECDC4', '#95E1D3', '#F38181', '#AA96DA',
-                '#FFE66D', '#FF6B6B', '#4ECDC4', '#95E1D3', '#F7B731', '#A29BFE'
-            ];
-            
-            // Create new segments with updated points
-            for (let i = 0; i < segmentsCount; i++) {
-                const segment = document.createElement('div');
-                segment.className = 'wheel-segment';
-                segment.style.transform = `rotate(${i * anglePerSegment}deg)`;
-                segment.style.background = colors[i % colors.length];
-                segment.innerHTML = `<span>${points[i]}</span>`;
-                wheel.appendChild(segment);
-            }
+            // Update each text element with the new point values
+            points.forEach((point, index) => {
+                if (textElements[index]) {
+                    textElements[index].textContent = point;
+                }
+            });
             
             // Update global wheelSegments array
-            updateWheelSegmentsArray(points, anglePerSegment);
+            updateWheelSegmentsArray(points, 360 / points.length);
             
             console.log('✅ Wheel segments updated successfully');
         }
@@ -2259,11 +2262,14 @@
         // ✅ YEH NAYA FUNCTION - Wheel segments array update karna
         function updateWheelSegmentsArray(points, anglePerSegment) {
             wheelSegments = [];
+            // ✅ FIXED: SVG segments start at top (270°), so offset by -90° to align with 0° = top
+            const offsetAngle = -90;
+            
             for (let i = 0; i < points.length; i++) {
                 wheelSegments.push({
                     points: points[i],
-                    startAngle: i * anglePerSegment,
-                    endAngle: (i + 1) * anglePerSegment
+                    startAngle: (i * anglePerSegment) + offsetAngle,
+                    endAngle: ((i + 1) * anglePerSegment) + offsetAngle
                 });
             }
             console.log('🔄 Wheel segments array updated:', wheelSegments);
@@ -2946,16 +2952,60 @@
                     return;
                 }
                 
-                // Calculate random segment and final rotation
-                const randomSegmentIndex = Math.floor(Math.random() * wheelSegments.length);
-                const selectedSegment = wheelSegments[randomSegmentIndex];
+                // ✅ WEIGHTED PROBABILITY - Lower points zyada aayenge, higher points kam (10%)
+                // First, find the median point value to classify low vs high
+                const allPoints = wheelSegments.map(seg => seg.points).sort((a, b) => a - b);
+                const medianPoint = allPoints[Math.floor(allPoints.length / 2)];
+                
+                // Assign weights: low points get 90% total probability, high points get 10%
+                const lowSegments = wheelSegments.filter(seg => seg.points <= medianPoint);
+                const highSegments = wheelSegments.filter(seg => seg.points > medianPoint);
+                
+                // If all segments are same, use equal probability
+                const totalLowWeight = lowSegments.length > 0 ? 90 : 50;
+                const totalHighWeight = highSegments.length > 0 ? 10 : 50;
+                
+                // Create weighted array with probabilities
+                const weightedSegments = wheelSegments.map(segment => {
+                    const isLowPoint = segment.points <= medianPoint;
+                    const segmentGroup = isLowPoint ? lowSegments : highSegments;
+                    const groupWeight = isLowPoint ? totalLowWeight : totalHighWeight;
+                    const weight = segmentGroup.length > 0 ? groupWeight / segmentGroup.length : 1;
+                    
+                    return {
+                        segment: segment,
+                        weight: weight,
+                        index: wheelSegments.indexOf(segment)
+                    };
+                });
+                
+                // Calculate total weight for normalization
+                const totalWeight = weightedSegments.reduce((sum, item) => sum + item.weight, 0);
+                
+                // Generate random number between 0 and totalWeight
+                const randomValue = Math.random() * totalWeight;
+                
+                // Select segment based on weighted probability
+                let cumulativeWeight = 0;
+                let selectedSegmentIndex = 0;
+                
+                for (let i = 0; i < weightedSegments.length; i++) {
+                    cumulativeWeight += weightedSegments[i].weight;
+                    if (randomValue <= cumulativeWeight) {
+                        selectedSegmentIndex = weightedSegments[i].index;
+                        break;
+                    }
+                }
+                
+                const selectedSegment = wheelSegments[selectedSegmentIndex];
                 
                 // Calculate the middle angle of the selected segment
                 const segmentMiddleAngle = (selectedSegment.startAngle + selectedSegment.endAngle) / 2;
                 
-                // Calculate the rotation needed to position the segment at the pointer
-                // The pointer is at 270 degrees (top), so we want the segment's middle to be at 270
-                const targetRotation = 270 - segmentMiddleAngle;
+                // ✅ FIXED: Arrow is at top (270°) pointing down at the wheel
+                // We want the segment's middle angle to align with 270° (where arrow points)
+                const arrowAngle = 270; // Arrow at top-center
+                const targetRotation = arrowAngle - segmentMiddleAngle;
                 
                 // Add multiple full rotations for a spinning effect (5 full rotations = 1800 degrees)
                 const fullRotations = 5 * 360;
