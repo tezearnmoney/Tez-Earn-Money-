@@ -701,6 +701,128 @@
         .toast.info {
             background-color: #3b82f6;
         }
+        
+        /* Referral Code Styling */
+        .referral-code-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .referral-code {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .referral-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .referral-stat {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        /* Forget Password Page Styling */
+        .forget-password-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        .forget-password-section.active {
+            display: block;
+        }
+        
+        .forget-password-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        
+        .forget-password-header {
+            background: #4a6ee0;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .forget-password-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .forget-password-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .forget-password-body {
+            padding: 30px;
+        }
+        
+        .instructions {
+            background: #e6fffa;
+            border: 1px solid #81e6d9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #234e52;
+        }
+        
+        .instructions h3 {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .forget-password-loader {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .forget-password-loader-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4a6ee0;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 480px) {
+            .forget-password-body {
+                padding: 20px;
+            }
+            
+            .forget-password-header {
+                padding: 20px;
+            }
+        }
+        
+        /* Withdrawal Success Animation */
+        .withdrawal-success-animation {
+            animation: successPulse 0.6s ease-in-out;
+        }
+        
+        @keyframes successPulse {
+            0% { transform: scale(0.95); opacity: 0; }
+            70% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 font-sans safe-area-bottom">
@@ -736,7 +858,7 @@
                     
                     <button id="login-btn" class="btn-primary py-3 rounded-lg text-lg font-bold w-full mb-4">
                         <span id="login-text">Sign In</span>
-                        <span id="login-loading" class="loading hidden"></span>
+                        <span id="login-loading" class="hidden"></span>
                     </button>
                     
                     <div id="login-message" class="success-message text-center hidden"></div>
@@ -744,6 +866,10 @@
                     <div class="text-center mt-4">
                         <p class="text-gray-600">Don't have an account? 
                             <span class="toggle-form" onclick="showSignupForm()">Sign Up</span>
+                        </p>
+                        <!-- Forget Password Link -->
+                        <p class="text-gray-600 mt-2">
+                            <span class="toggle-form" onclick="showForgetPasswordPage()">Forgot Password?</span>
                         </p>
                     </div>
                 </div>
@@ -776,9 +902,16 @@
                         <div id="signup-confirm-password-error" class="error-message hidden"></div>
                     </div>
                     
+                    <!-- Referral Code Input (Only show if coming from referral) -->
+                    <div id="referral-input-container" class="form-group hidden">
+                        <label class="form-label" for="referral-code">Referral Code (Optional)</label>
+                        <input type="text" id="referral-code" class="form-input" placeholder="Enter referral code if any">
+                        <div id="referral-code-error" class="error-message hidden"></div>
+                    </div>
+                    
                     <button id="signup-btn" class="btn-primary py-3 rounded-lg text-lg font-bold w-full mb-4">
                         <span id="signup-text">Create Account</span>
-                        <span id="signup-loading" class="loading hidden"></span>
+                        <span id="signup-loading" class="hidden"></span>
                     </button>
                     
                     <div id="signup-message" class="success-message text-center hidden"></div>
@@ -786,6 +919,54 @@
                     <div class="text-center mt-4">
                         <p class="text-gray-600">Already have an account? 
                             <span class="toggle-form" onclick="showLoginForm()">Sign In</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forget Password Page -->
+    <div id="forget-password-page" class="forget-password-section">
+        <div class="container max-w-4xl mx-auto px-3 py-8">
+            <div class="forget-password-card">
+                <div class="forget-password-header">
+                    <h1>Reset Your Password</h1>
+                    <p>Enter your email to receive a reset link</p>
+                </div>
+                <div class="forget-password-body">
+                    <div class="instructions">
+                        <h3>How it works:</h3>
+                        <p>Enter your email address and we'll send you a link to reset your password. This link will expire in 1 hour for security.</p>
+                    </div>
+                    
+                    <div id="successMessage" class="success-message hidden">
+                        Reset link sent successfully! Please check your email.
+                    </div>
+                    
+                    <div id="errorMessage" class="error-message hidden">
+                        Please enter a valid email address.
+                    </div>
+                    
+                    <form id="forgotPasswordForm">
+                        <div class="form-group">
+                            <label class="form-label" for="reset-email">Email Address</label>
+                            <input type="email" id="reset-email" class="form-input" placeholder="Enter your email address" required>
+                        </div>
+                        
+                        <div class="forget-password-loader" id="resetLoader">
+                            <div class="forget-password-loader-spinner"></div>
+                            <p>Sending reset link...</p>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary py-3 rounded-lg text-lg font-bold w-full mb-4">
+                            Send Reset Link
+                        </button>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <p class="text-gray-600">Remember your password? 
+                            <span class="toggle-form" onclick="showLoginForm()">Back to Sign In</span>
                         </p>
                     </div>
                 </div>
@@ -866,7 +1047,7 @@
                         </button>
                     </div>
                     
-                    <!-- Referral System - DYNAMIC -->
+                    <!-- Referral System - UPDATED WITH UNIQUE CODES -->
                     <div class="referral mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
                         <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center justify-center">
                             <i class="fas fa-user-friends mr-2 text-blue-500"></i> Refer & Earn
@@ -874,8 +1055,18 @@
                         <p class="text-gray-600 mb-4 text-sm text-center" id="referral-bonus-text">
                             Invite friends and earn 100 bonus points!
                         </p>
+                        
+                        <!-- Referral Code Display -->
+                        <div class="referral-code-display">
+                            <p class="text-sm opacity-90">Your Unique Referral Code</p>
+                            <div class="referral-code" id="user-referral-code">TEZ123</div>
+                            <button onclick="copyReferralCode()" class="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold text-sm flex items-center justify-center mx-auto">
+                                <i class="fas fa-copy mr-2"></i> Copy Code
+                            </button>
+                        </div>
+                        
                         <div class="flex flex-col gap-2">
-                            <input type="text" id="referral-link" value="https://tezearn.com/ref/yourcode" readonly class="border border-blue-200 rounded-lg p-3 bg-white text-sm font-mono">
+                            <input type="text" id="referral-link" value="Loading..." readonly class="border border-blue-200 rounded-lg p-3 bg-white text-sm font-mono">
                             <button onclick="copyReferralLink()" class="btn-primary py-3 rounded-lg flex items-center justify-center text-sm font-semibold">
                                 <i class="fas fa-copy mr-2"></i> Copy Link
                             </button>
@@ -884,6 +1075,18 @@
                             <button onclick="shareOnWhatsApp()" class="bg-gradient-to-br from-green-500 to-green-600 text-white py-3 rounded-lg flex items-center justify-center text-sm font-semibold mt-2">
                                 <i class="fab fa-whatsapp mr-2 text-lg"></i> Share on WhatsApp
                             </button>
+                        </div>
+                        
+                        <!-- Referral Stats -->
+                        <div class="referral-stats">
+                            <div class="referral-stat">
+                                <p class="text-xs opacity-80">Total Referrals</p>
+                                <p class="text-lg font-bold" id="total-referrals">0</p>
+                            </div>
+                            <div class="referral-stat">
+                                <p class="text-xs opacity-80">Bonus Earned</p>
+                                <p class="text-lg font-bold" id="referral-bonus-earned">0 pts</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1044,6 +1247,11 @@
                             <div class="ml-4">
                                 <h4 class="font-bold text-gray-800 text-lg" id="user-name">User Name</h4>
                                 <p class="text-gray-600 text-sm" id="user-email">user@example.com</p>
+                                <!-- Referral Code in Profile -->
+                                <p class="text-blue-500 text-sm font-mono mt-1">
+                                    <i class="fas fa-user-friends mr-1"></i> 
+                                    Referral Code: <span id="profile-referral-code">Loading...</span>
+                                </p>
                             </div>
                         </div>
                         
@@ -1065,7 +1273,7 @@
                         <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200">
                             <i class="fas fa-user-friends text-xl text-blue-500 mb-2"></i>
                             <p class="font-bold text-sm">Referrals</p>
-                            <p class="text-gray-600 text-sm mt-1">0 Friends</p>
+                            <p class="text-gray-600 text-sm mt-1"><span id="profile-referrals">0</span> Friends</p>
                         </div>
                         <a href="https://t.me/rgstudiopvtltd" target="_blank" class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200 block hover:bg-cyan-50 transition-all cursor-pointer">
                             <i class="fab fa-telegram text-xl text-cyan-500 mb-2"></i>
@@ -1369,6 +1577,41 @@
             </div>
         </div>
 
+        <!-- Withdrawal Success Modal -->
+        <div id="withdrawalSuccessModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="text-xl font-bold"><i class="fas fa-check-circle mr-2"></i> Withdrawal Successful</h2>
+                    <button class="close-modal" onclick="closeWithdrawalSuccessModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center py-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-check text-3xl text-white"></i>
+                        </div>
+                        
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Withdrawal Request Submitted!</h3>
+                        
+                        <div class="bg-green-50 p-4 rounded-xl border border-green-200 mb-6">
+                            <p class="text-gray-600 mb-2">Amount</p>
+                            <p class="text-3xl font-bold text-green-600" id="withdrawal-success-amount">₹0.00</p>
+                        </div>
+                        
+                        <div class="bg-blue-50 p-4 rounded-xl border border-blue-200">
+                            <i class="fas fa-clock text-blue-500 text-xl mb-2"></i>
+                            <p class="text-blue-700 font-semibold">Your money will be credited within</p>
+                            <p class="text-blue-800 text-lg font-bold mt-1">1-2 Working Days</p>
+                            <p class="text-blue-600 text-sm mt-2">to your bank account/UPI</p>
+                        </div>
+                        
+                        <button onclick="closeWithdrawalSuccessModal()" class="btn-primary py-3 px-8 rounded-lg text-lg font-bold w-full mt-6">
+                            Continue Earning
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Bottom Navigation - Mobile Optimized -->
         <div class="bottom-nav fixed bottom-0 left-0 right-0 flex justify-around p-2 safe-area-bottom">
             <button class="nav-btn active flex flex-col items-center" onclick="showAppSection('home')">
@@ -1463,6 +1706,241 @@
             }, { merge: true });
         }
 
+        // ✅ NAYA FUNCTION: Generate unique referral code
+        function generateReferralCode(userId, name = '') {
+            // User ID se 6-digit code generate karo
+            const baseCode = userId.substring(0, 6).toUpperCase();
+            
+            // Agar name available hai to first 2 letters add karo
+            let namePart = '';
+            if (name && name.length >= 2) {
+                namePart = name.substring(0, 2).toUpperCase();
+            } else {
+                namePart = 'TE'; // Default
+            }
+            
+            return `${namePart}${baseCode}`;
+        }
+
+        // ✅ NAYA FUNCTION: User ka referral code setup karo
+        function setupUserReferralCode(userId, userData) {
+            console.log('🔄 Setting up referral code for user:', userId);
+            
+            db.collection('users').doc(userId).get().then((doc) => {
+                if (doc.exists) {
+                    const userDoc = doc.data();
+                    
+                    let referralCode = userDoc.referralCode;
+                    
+                    // Agar referral code nahi hai to generate karo
+                    if (!referralCode) {
+                        referralCode = generateReferralCode(userId, userData.name);
+                        
+                        // Firestore mein save karo
+                        db.collection('users').doc(userId).update({
+                            referralCode: referralCode,
+                            referralLink: `${window.location.origin}${window.location.pathname}?ref=${referralCode}`,
+                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        }).then(() => {
+                            console.log('✅ Referral code generated:', referralCode);
+                            updateReferralDisplay(referralCode, userDoc);
+                        });
+                    } else {
+                        // Agar already hai to display update karo
+                        updateReferralDisplay(referralCode, userDoc);
+                    }
+                }
+            }).catch(error => {
+                console.error('❌ Error setting up referral code:', error);
+            });
+        }
+
+        // ✅ NAYA FUNCTION: Referral display update karo
+        function updateReferralDisplay(referralCode, userData) {
+            // Referral code display
+            document.getElementById('user-referral-code').textContent = referralCode;
+            document.getElementById('profile-referral-code').textContent = referralCode;
+            
+            // ✅ FIXED: Current page ka use karo referral link ke liye
+            const referralLink = `${window.location.origin}${window.location.pathname}?ref=${referralCode}`;
+            document.getElementById('referral-link').value = referralLink;
+            
+            // Referral stats update
+            const referralsCount = userData.referrals || 0;
+            document.getElementById('total-referrals').textContent = referralsCount;
+            document.getElementById('referral-bonus-earned').textContent = 
+                `${(referralsCount * 100)} pts`; // 100 points per referral
+            document.getElementById('profile-referrals').textContent = referralsCount;
+        }
+
+        // ✅ NAYA FUNCTION: Referral code copy karo
+        function copyReferralCode() {
+            const referralCode = document.getElementById('user-referral-code').textContent;
+            
+            navigator.clipboard.writeText(referralCode)
+                .then(() => showToast('Referral code copied to clipboard!', 'success'))
+                .catch(() => showToast('Failed to copy code', 'error'));
+        }
+
+        // ✅ NAYA FUNCTION: Referral link copy karo
+        function copyReferralLink() {
+            const link = document.getElementById('referral-link');
+            link.select();
+            link.setSelectionRange(0, 99999); // Mobile devices ke liye
+            
+            try {
+                document.execCommand('copy');
+                showToast('Referral link copied to clipboard!', 'success');
+            } catch (err) {
+                // Fallback: Modern clipboard API
+                navigator.clipboard.writeText(link.value)
+                    .then(() => showToast('Referral link copied!', 'success'))
+                    .catch(() => showToast('Failed to copy link', 'error'));
+            }
+        }
+
+        // ✅ NAYA FUNCTION: WhatsApp pe share karne ke liye - FIXED
+        function shareOnWhatsApp() {
+            const referralLink = document.getElementById('referral-link').value;
+            const referralCode = document.getElementById('user-referral-code').textContent;
+            
+            // Better message banao
+            const message = `🎉 *Tez Earn App* - Paise Kamaye! 💰\n\n` +
+                           `Mera referral code use karo: *${referralCode}*\n\n` +
+                           `Yahan signup karo: ${referralLink}\n\n` +
+                           `Rozana tasks complete karo, wheel spin karo, aur paise kamao! 🚀`;
+            
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            showToast('WhatsApp share ready!', 'success');
+        }
+
+        // ✅ NAYA FUNCTION: Referral system initialize karo
+        function initializeReferralSystem() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            // Referral code setup karo
+            db.collection('users').doc(user.uid).get().then((doc) => {
+                if (doc.exists) {
+                    const userData = doc.data();
+                    setupUserReferralCode(user.uid, userData);
+                }
+            });
+            
+            // Referral real-time listener
+            db.collection('users').doc(user.uid).onSnapshot((doc) => {
+                if (doc.exists) {
+                    const userData = doc.data();
+                    updateReferralDisplay(userData.referralCode, userData);
+                }
+            });
+        }
+
+        // ✅ NAYA FUNCTION: Referral tracking aur bonus distribution
+        function trackReferral(referralCode) {
+            console.log('🎯 Tracking referral with code:', referralCode);
+            
+            // Referral code se referrer find karo
+            db.collection('users')
+                .where('referralCode', '==', referralCode)
+                .get()
+                .then((querySnapshot) => {
+                    if (!querySnapshot.empty) {
+                        const referrerDoc = querySnapshot.docs[0];
+                        const referrerData = referrerDoc.data();
+                        const referrerId = referrerDoc.id;
+                        
+                        console.log('🎯 Referrer found:', referrerData.name);
+                        
+                        // Current user (jo signup kar raha hai)
+                        const currentUser = auth.currentUser;
+                        
+                        if (currentUser && currentUser.uid !== referrerId) {
+                            // Referrer ko bonus points do
+                            const referralBonus = 100; // Default bonus
+                            
+                            // Firestore se current referral bonus get karo
+                            db.collection('settings').doc('app').get().then((appDoc) => {
+                                let actualBonus = referralBonus;
+                                
+                                if (appDoc.exists) {
+                                    const appSettings = appDoc.data();
+                                    actualBonus = appSettings.referralBonus || referralBonus;
+                                }
+                                
+                                // Referrer ko bonus do
+                                return db.collection('users').doc(referrerId).update({
+                                    points: firebase.firestore.FieldValue.increment(actualBonus),
+                                    referrals: firebase.firestore.FieldValue.increment(1),
+                                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                                });
+                            }).then(() => {
+                                console.log('✅ Referral bonus given to referrer');
+                                
+                                // Transaction history mein add karo
+                                const transactionList = document.getElementById('transaction-list');
+                                if (transactionList) {
+                                    const li = document.createElement('li');
+                                    li.className = 'p-3 rounded-lg bg-white border border-gray-200 flex justify-between items-center';
+                                    li.innerHTML = `
+                                        <div class="flex-1">
+                                            <p class="font-semibold text-gray-800 text-sm">Referral bonus earned</p>
+                                            <p class="text-gray-500 text-xs mt-1">${new Date().toISOString().split('T')[0]}</p>
+                                        </div>
+                                        <span class="text-green-500 font-bold text-sm ml-2">+100 pts</span>
+                                    `;
+                                    transactionList.prepend(li);
+                                }
+                                
+                                showToast(`🎉 Referral bonus of 100 points claimed!`, 'success');
+                            });
+                        }
+                    } else {
+                        console.log('❌ No user found with referral code:', referralCode);
+                    }
+                })
+                .catch((error) => {
+                    console.error('❌ Error tracking referral:', error);
+                });
+        }
+
+        // ✅ NAYA FUNCTION: URL se referral code check karo
+        function checkReferralFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref');
+            
+            if (refCode) {
+                console.log('🎯 Referral code found in URL:', refCode);
+                // Store referral code for later use
+                localStorage.setItem('pendingReferral', refCode);
+                
+                // Show referral input field in signup form
+                document.getElementById('referral-input-container').classList.remove('hidden');
+                document.getElementById('referral-code').value = refCode;
+                
+                // Show message to user
+                showToast(`🎉 You were referred by a friend! Sign up to get bonus.`, 'info');
+            }
+        }
+
+        // ✅ NAYA FUNCTION: Signup process mein referral apply karo
+        function applyReferralOnSignup(userId) {
+            const pendingReferral = localStorage.getItem('pendingReferral');
+            const referralCodeInput = document.getElementById('referral-code').value;
+            
+            // Priority: URL parameter > Input field
+            const referralCode = pendingReferral || referralCodeInput;
+            
+            if (referralCode) {
+                console.log('🎯 Applying referral for new user:', referralCode);
+                trackReferral(referralCode);
+                
+                // Clear pending referral
+                localStorage.removeItem('pendingReferral');
+            }
+        }
+
         // ✅ NAYA FUNCTION: Starting bonus dene ke liye
         function giveStartingBonus(userId, userData) {
             const startingBonusPoints = 150;
@@ -1527,6 +2005,9 @@
                         userData.points = userDataFromFirestore.points || 0;
                         userData.balance = userDataFromFirestore.balance || 0;
                         
+                        // ✅ NAYA CODE: Referral code setup karo
+                        setupUserReferralCode(userId, userDataFromFirestore);
+                        
                         // ✅ NAYA CODE: Agar starting bonus nahi mila hai to do
                         if (!hasReceivedStartingBonus) {
                             giveStartingBonus(userId, userDataFromFirestore);
@@ -1545,14 +2026,16 @@
                             points: 0, // ✅ Starting with 0 points
                             balance: 0.00, // ✅ Starting with 0 balance
                             hasReceivedStartingBonus: false, // ✅ NAYA FIELD: Starting bonus status
+                            referralCode: generateReferralCode(userId, user.displayName || 'User'),
+                            referralLink: `${window.location.origin}${window.location.pathname}?ref=${generateReferralCode(userId, user.displayName || 'User')}`,
+                            referrals: 0,
                             spinLimitData: {
                                 dailySpins: 0,
                                 maxDailySpins: 5,
                                 lastSpinDate: new Date().toDateString()
                             },
                             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            level: 'Bronze',
-                            referrals: 0
+                            level: 'Bronze'
                         }).then(() => {
                             // ✅ NAYA CODE: Ab starting bonus do
                             giveStartingBonus(userId, {
@@ -1636,6 +2119,9 @@
                 // Load user data from Firestore
                 loadUserData(user.uid);
                 
+                // ✅ NAYA LINE: Referral system initialize karo
+                initializeReferralSystem();
+                
                 // ✅ YEH LINE ADD KARO - Real-time listeners start karo
                 initializeRealtimeListeners();
                 initializeReferralSettings();
@@ -1653,6 +2139,9 @@
             showMethodFields();
             loadInitialWheelSettings();
             initializeConversionSettings(); // ✅ NAYA LINE ADD KARO
+            
+            // ✅ NAYA: Check for referral in URL
+            checkReferralFromURL();
         });
 
         // Wheel segments with their point values and angles - DYNAMIC NOW
@@ -2031,26 +2520,28 @@
             }, 3000);
         }
 
-        // ✅ YEH NAYA FUNCTION - WhatsApp pe share karne ke liye
-        function shareOnWhatsApp() {
-            const referralLink = document.getElementById('referral-link').value;
-            const message = `🎉 Join Tez Earn and start earning money! 💰\n\nUse my referral link to get bonus points:\n${referralLink}\n\nLet's earn together! 🚀`;
-            
-            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-            showToast('Opening WhatsApp...', 'success');
-        }
-
         // Auth Functions
         function showLoginForm() {
             document.getElementById('login-form').classList.remove('hidden');
             document.getElementById('signup-form').classList.add('hidden');
+            document.getElementById('forget-password-page').classList.remove('active');
+            document.getElementById('auth').classList.add('active');
             clearAuthErrors();
         }
 
         function showSignupForm() {
             document.getElementById('login-form').classList.add('hidden');
             document.getElementById('signup-form').classList.remove('hidden');
+            document.getElementById('forget-password-page').classList.remove('active');
+            document.getElementById('auth').classList.add('active');
+            clearAuthErrors();
+        }
+
+        // ✅ NAYA FUNCTION: Show Forget Password Page
+        function showForgetPasswordPage() {
+            document.getElementById('auth').classList.remove('active');
+            document.getElementById('app').classList.remove('active');
+            document.getElementById('forget-password-page').classList.add('active');
             clearAuthErrors();
         }
 
@@ -2136,6 +2627,65 @@
                 });
         });
 
+        // ✅ NAYA FUNCTION: Reset Password Function
+        function resetPassword() {
+            const email = document.getElementById('reset-email').value;
+            
+            // Clear previous errors
+            clearAuthErrors();
+            
+            // Validate email
+            if (!email) {
+                document.getElementById('errorMessage').textContent = 'Email is required';
+                document.getElementById('errorMessage').classList.remove('hidden');
+                return;
+            }
+            
+            // Email format validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('errorMessage').textContent = 'Please enter a valid email address';
+                document.getElementById('errorMessage').classList.remove('hidden');
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('forgot-submit-btn').disabled = true;
+            document.getElementById('resetLoader').style.display = 'block';
+            
+            // Send password reset email
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    document.getElementById('successMessage').textContent = 'Password reset email sent! Check your inbox.';
+                    document.getElementById('successMessage').classList.remove('hidden');
+                    
+                    // Auto redirect to login after 3 seconds
+                    setTimeout(() => {
+                        showLoginForm();
+                    }, 3000);
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    let errorMessage = 'An error occurred while sending reset email';
+                    
+                    if (errorCode === 'auth/user-not-found') {
+                        errorMessage = 'No account found with this email address';
+                    } else if (errorCode === 'auth/invalid-email') {
+                        errorMessage = 'Invalid email address';
+                    } else if (errorCode === 'auth/too-many-requests') {
+                        errorMessage = 'Too many requests. Please try again later.';
+                    }
+                    
+                    document.getElementById('errorMessage').textContent = errorMessage;
+                    document.getElementById('errorMessage').classList.remove('hidden');
+                })
+                .finally(() => {
+                    // Reset loading state
+                    document.getElementById('forgot-submit-btn').disabled = false;
+                    document.getElementById('resetLoader').style.display = 'none';
+                });
+        }
+
         // ✅ FIXED: Signup function - Starting bonus control
         document.getElementById('signup-btn').addEventListener('click', function() {
             const name = document.getElementById('signup-name').value;
@@ -2192,6 +2742,9 @@
                     // Signed up
                     const user = userCredential.user;
                     
+                    // ✅ NAYA: Referral code generate karo
+                    const referralCode = generateReferralCode(user.uid, name);
+                    
                     // ✅ FIXED: Save user data to Firestore WITHOUT starting bonus initially
                     return db.collection('users').doc(user.uid).set({
                         name: name,
@@ -2199,9 +2752,11 @@
                         points: 0, // ✅ Start with 0 points
                         balance: 0.00, // ✅ Start with 0 balance
                         hasReceivedStartingBonus: false, // ✅ NAYA FIELD: Bonus not given yet
+                        referralCode: referralCode,
+                        referralLink: `${window.location.origin}${window.location.pathname}?ref=${referralCode}`,
+                        referrals: 0,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                         level: 'Bronze',
-                        referrals: 0,
                         spinLimitData: {
                             dailySpins: 0,
                             maxDailySpins: 5,
@@ -2210,6 +2765,9 @@
                     });
                 })
                 .then(() => {
+                    // ✅ NAYA: Apply referral if any
+                    applyReferralOnSignup(user.uid);
+                    
                     document.getElementById('signup-message').textContent = 'Account created successfully!';
                     document.getElementById('signup-message').classList.remove('hidden');
                     
@@ -2478,7 +3036,7 @@
             transactionList.prepend(li);
         }
 
-        // Updated withdrawal submission function - FIXED VERSION
+        // Updated withdrawal submission function - FIXED VERSION with Success Popup
         function submitWithdrawal() {
             const amount = parseFloat(document.getElementById('withdrawal-amount').value);
             const method = document.getElementById('withdrawal-method');
@@ -2580,6 +3138,9 @@
                     `;
                     transactionList.prepend(li);
                     
+                    // ✅ NAYA: Show withdrawal success popup
+                    showWithdrawalSuccessModal(amount);
+                    
                     // Clear form fields
                     document.getElementById('withdrawal-amount').value = '';
                     document.getElementById('upi-id').value = '';
@@ -2588,7 +3149,6 @@
                     document.getElementById('account-number').value = '';
                     document.getElementById('ifsc-code').value = '';
                     
-                    showToast(`Withdrawal request for ₹${amount} submitted!`, 'success');
                 }).catch((error) => {
                     console.error('Error saving withdrawal:', error);
                     alert('Error submitting withdrawal: ' + error.message);
@@ -2596,25 +3156,37 @@
             });
         }
 
+        // ✅ NAYA FUNCTION: Show withdrawal success modal
+        function showWithdrawalSuccessModal(amount) {
+            const modal = document.getElementById('withdrawalSuccessModal');
+            const amountElement = document.getElementById('withdrawal-success-amount');
+            
+            // Set the withdrawal amount
+            amountElement.textContent = `₹${amount.toFixed(2)}`;
+            
+            // Show the modal
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Add animation class
+            const modalContent = modal.querySelector('.modal-content');
+            modalContent.classList.add('withdrawal-success-animation');
+        }
+
+        // ✅ NAYA FUNCTION: Close withdrawal success modal
+        function closeWithdrawalSuccessModal() {
+            const modal = document.getElementById('withdrawalSuccessModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            // Remove animation class
+            const modalContent = modal.querySelector('.modal-content');
+            modalContent.classList.remove('withdrawal-success-animation');
+        }
+
         // Placeholder Functions
         function watchAds() {
             alert("Redirecting to watch ads...");
-        }
-
-        function copyReferralLink() {
-            const link = document.getElementById('referral-link');
-            link.select();
-            link.setSelectionRange(0, 99999); // Mobile devices ke liye
-            
-            try {
-                document.execCommand('copy');
-                showToast('Referral link copied to clipboard!', 'success');
-            } catch (err) {
-                // Fallback: Modern clipboard API
-                navigator.clipboard.writeText(link.value)
-                    .then(() => showToast('Referral link copied!', 'success'))
-                    .catch(() => showToast('Failed to copy link', 'error'));
-            }
         }
 
         // Logout function
@@ -2632,6 +3204,8 @@
                 document.getElementById('signup-email').value = '';
                 document.getElementById('signup-password').value = '';
                 document.getElementById('signup-confirm-password').value = '';
+                document.getElementById('referral-code').value = '';
+                document.getElementById('reset-email').value = '';
             }).catch((error) => {
                 console.error('Logout error:', error);
             });
@@ -2694,12 +3268,16 @@
         window.onclick = function(event) {
             const aboutModal = document.getElementById('aboutModal');
             const privacyModal = document.getElementById('privacyModal');
+            const withdrawalSuccessModal = document.getElementById('withdrawalSuccessModal');
             
             if (event.target === aboutModal) {
                 closeAbout();
             }
             if (event.target === privacyModal) {
                 closePrivacyPolicy();
+            }
+            if (event.target === withdrawalSuccessModal) {
+                closeWithdrawalSuccessModal();
             }
         }
 
@@ -2712,6 +3290,7 @@
                 // User is signed out
                 document.getElementById('app').classList.remove('active');
                 document.getElementById('auth').classList.add('active');
+                showLoginForm();
             }
         });
 
@@ -2784,6 +3363,28 @@
             
             console.log('✅ Minimum conversion points updated successfully');
         }
+
+        // ✅ NAYA: Event listener for reset password button
+        document.addEventListener('DOMContentLoaded', function() {
+            const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+            if (forgotPasswordForm) {
+                forgotPasswordForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    resetPassword();
+                });
+            }
+            
+            // Enter key support for forgot password form
+            const resetEmailInput = document.getElementById('reset-email');
+            if (resetEmailInput) {
+                resetEmailInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        resetPassword();
+                    }
+                });
+            }
+        });
 
         // Prevent zoom on input focus for better mobile experience
         document.addEventListener('DOMContentLoaded', function() {
