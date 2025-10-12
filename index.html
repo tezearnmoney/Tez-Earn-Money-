@@ -740,11 +740,323 @@
             70% { transform: scale(1.02); opacity: 1; }
             100% { transform: scale(1); opacity: 1; }
         }
+
+        /* NEW: Ad Timer Modal Styles */
+        .ad-timer-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .ad-timer-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ad-timer-content {
+            background: white;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 400px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        .ad-timer-header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .ad-timer-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.2);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .ad-timer-close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .ad-timer-body {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .timer-display {
+            font-size: 72px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .timer-progress {
+            width: 100%;
+            height: 12px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 25px 0;
+        }
+
+        .timer-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00b894, #00cec9);
+            border-radius: 10px;
+            transition: width 1s linear;
+            width: 0%;
+        }
+
+        .ad-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px dashed #bdc3c7;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .ad-placeholder {
+            font-size: 48px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .ad-text {
+            color: #34495e;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .points-reward {
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .ad-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 15px 0;
+            font-size: 14px;
+            color: #856404;
+        }
+
+        .ad-complete-message {
+            display: none;
+            background: linear-gradient(135deg, #00b894, #55efc4);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            text-align: center;
+            position: relative;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .ad-complete-message.active {
+            display: block;
+            animation: bounceIn 0.5s ease;
+        }
+
+        /* Modal Top-Right Close Button */
+        .modal-close-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: white;
+            border: 3px solid #00b894;
+            color: #00b894;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            line-height: 1;
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+            z-index: 10000;
+        }
+
+        .modal-close-btn:hover {
+            background: #00b894;
+            color: white;
+            transform: scale(1.2) rotate(90deg);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.5);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Ad Button Styling - Enhanced UX */
+        .ad-task-btn {
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 20px rgba(196, 69, 105, 0.35);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 105px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ad-task-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .ad-task-btn:hover::before {
+            left: 100%;
+        }
+
+        .ad-task-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(196, 69, 105, 0.45);
+        }
+
+        .ad-task-btn:active {
+            transform: translateY(-2px) scale(0.98);
+            box-shadow: 0 6px 15px rgba(196, 69, 105, 0.3);
+        }
+
+        .ad-task-btn i {
+            font-size: 36px;
+            margin-bottom: 10px;
+            animation: playIconPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes playIconPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+            }
+            50% { 
+                transform: scale(1.1); 
+                filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+            }
+        }
+
+        .ad-task-btn .font-semibold {
+            font-size: 17px;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .ad-task-btn .text-sm {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 8px;
+            backdrop-filter: blur(10px);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 font-sans safe-area-bottom">
     <!-- Toast Container -->
     <div id="toast-container"></div>
+
+    <!-- NEW: Ad Timer Modal -->
+    <div id="adTimerModal" class="ad-timer-modal">
+        <div class="ad-timer-content">
+            <div class="ad-timer-header">
+                <h2 class="text-xl font-bold">🎬 Watch Ad to Earn</h2>
+                <div class="ad-timer-close" onclick="closeAdTimer()">×</div>
+            </div>
+            <div class="ad-timer-body">
+                <div class="timer-display" id="adTimerDisplay">10</div>
+                
+                <div class="timer-progress">
+                    <div class="timer-progress-fill" id="adTimerProgress"></div>
+                </div>
+
+                <div class="ad-container">
+                    <div class="ad-placeholder">📱</div>
+                    <div class="ad-text" id="adContentText">Advertisement Loading...</div>
+                    <!-- Adsterra ya kisi ad network ka ad yahan load hoga -->
+                    <div id="adContainer"></div>
+                </div>
+
+                <div class="points-reward">
+                    🎁 Earn <span id="rewardPoints">100</span> Points!
+                </div>
+
+                <div class="ad-warning">
+                    ⚠️ Don't close this window! Points will only be awarded if you watch the complete ad.
+                </div>
+
+                <div class="ad-complete-message" id="adCompleteMessage">
+                    <div style="font-size: 36px; margin-bottom: 8px;">🎉</div>
+                    <h3 style="font-size: 18px; margin-bottom: 6px; font-weight: 700;">Congratulations!</h3>
+                    <p style="font-size: 15px; margin-bottom: 12px;">You earned <strong>100 Points</strong>!</p>
+                    <button onclick="closeAdTimer()" class="btn-primary" style="padding: 10px 24px; font-size: 14px; border-radius: 8px;">
+                        Continue Earning
+                    </button>
+                </div>
+            </div>
+            <!-- Close Button - Screen Top Right -->
+            <button class="modal-close-btn" id="adCompleteCloseBtn" onclick="closeAdTimer()" title="Close" style="display: none;">×</button>
+        </div>
+    </div>
 
     <!-- Auth Section -->
     <div id="auth" class="auth-section active">
@@ -922,14 +1234,18 @@
                         <i class="fas fa-tasks mr-2 text-blue-500"></i> Earn Points
                     </h3>
                     <div class="grid grid-cols-2 gap-3 mb-6">
-                        <button onclick="spin()" class="task-btn bg-gradient-to-br from-blue-400 to-blue-600 text-white">
-                            <i class="fas fa-sync-alt text-2xl mb-2"></i>
-                            <span class="font-semibold text-sm">Spin Wheel</span>
+                        <!-- UPDATED: Watch Ads Button with new styling -->
+                        <button onclick="startAdWithTimer()" class="ad-task-btn">
+                            <i class="fas fa-play-circle"></i>
+                            <span class="font-semibold">Watch Ads</span>
+                            <span class="text-sm opacity-90 mt-1">Earn 100 Points</span>
                         </button>
-                        <button onclick="watchAds()" class="task-btn bg-gradient-to-br from-green-400 to-green-600 text-white">
-                            <i class="fas fa-play-circle text-2xl mb-2"></i>
-                            <span class="font-semibold text-sm">Watch Ads</span>
+                        
+                        <button class="task-btn bg-gradient-to-br from-gray-400 to-gray-500 text-white cursor-not-allowed" disabled>
+                            <i class="fas fa-tasks text-2xl mb-2"></i>
+                            <span class="font-semibold text-sm">Coming Soon</span>
                         </button>
+                        
                         <button class="task-btn bg-gradient-to-br from-indigo-400 to-indigo-600 text-white">
                             <i class="fas fa-share-alt text-2xl mb-2"></i>
                             <span class="font-semibold text-sm">Refer Friends</span>
@@ -1281,7 +1597,7 @@
                     </div>
                     
                     <!-- Profile Options -->
-                    <div class="space-y-3 pt-4 border-t border-gray-300">
+                    <div class="space-y-2 pt-2 border-t border-gray-300">
                         <div class="grid grid-cols-2 gap-3">
                             <a href="mailto:rgstudiopvtltd@gmail.com" class="text-blue-500 hover:bg-blue-50 p-3 rounded-lg flex items-center justify-center text-sm font-semibold transition-all">
                                 <i class="fas fa-headset mr-2"></i> Support
@@ -1296,14 +1612,6 @@
                             </button>
                             <button onclick="logout()" class="text-red-500 hover:bg-red-50 p-3 rounded-lg flex items-center justify-center text-sm font-semibold transition-all">
                                 <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                            </button>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="openSupport()" class="text-orange-500 hover:bg-orange-50 p-3 rounded-lg flex items-center justify-center text-sm font-semibold transition-all">
-                                <i class="fas fa-headset mr-2"></i> Support
-                            </button>
-                            <button onclick="openTelegram()" class="text-cyan-500 hover:bg-cyan-50 p-3 rounded-lg flex items-center justify-center text-sm font-semibold transition-all">
-                                <i class="fab fa-telegram mr-2"></i> Telegram
                             </button>
                         </div>
                     </div>
@@ -1653,6 +1961,161 @@
             points: 0,
             balance: 0.00
         };
+
+        // Ad Timer Variables
+        let adTimerInterval;
+        let adSeconds = 10;
+        let adCompleted = false;
+        let adPoints = 100;
+
+        // NEW: Ad Timer Functions
+        function startAdWithTimer() {
+            if (!checkAdLimit()) {
+                showToast('Daily ad limit reached! Come back tomorrow.', 'error');
+                return;
+            }
+
+            // Reset ad state
+            adSeconds = 10;
+            adCompleted = false;
+            
+            // Show ad timer modal
+            document.getElementById('adTimerModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Reset UI
+            document.getElementById('adTimerDisplay').textContent = adSeconds;
+            document.getElementById('adTimerProgress').style.width = '0%';
+            document.getElementById('adCompleteMessage').classList.remove('active');
+            document.getElementById('adContentText').textContent = 'Advertisement Loading...';
+            
+            // Load random ad content
+            loadRandomAdContent();
+            
+            // Start timer
+            startAdTimer();
+        }
+
+        function startAdTimer() {
+            clearInterval(adTimerInterval);
+            
+            adTimerInterval = setInterval(() => {
+                adSeconds--;
+                
+                // Update timer display
+                document.getElementById('adTimerDisplay').textContent = adSeconds;
+                
+                // Update progress bar
+                const progress = ((10 - adSeconds) / 10) * 100;
+                document.getElementById('adTimerProgress').style.width = progress + '%';
+                
+                // Change ad content periodically
+                if (adSeconds % 3 === 0) {
+                    loadRandomAdContent();
+                }
+                
+                // Timer completed
+                if (adSeconds <= 0) {
+                    completeAd();
+                }
+            }, 1000);
+        }
+
+        function loadRandomAdContent() {
+            const adContents = [
+                { emoji: '🛒', text: 'Amazing Shopping Deals! Up to 70% OFF' },
+                { emoji: '🎮', text: 'New Mobile Game - Download Now!' },
+                { emoji: '📱', text: 'Latest Smartphone Offers' },
+                { emoji: '💳', text: 'Credit Card with Zero Fees' },
+                { emoji: '✈️', text: 'Travel Deals - Book Now & Save!' },
+                { emoji: '🏠', text: 'Home Loan at Low Interest Rates' },
+                { emoji: '🚗', text: 'Car Insurance - Compare & Save' },
+                { emoji: '🛍️', text: 'Flash Sale - Limited Time Offer!' }
+            ];
+            
+            const randomAd = adContents[Math.floor(Math.random() * adContents.length)];
+            document.getElementById('adContentText').innerHTML = 
+                `<div style="font-size: 32px; margin-bottom: 10px;">${randomAd.emoji}</div>
+                 <div>${randomAd.text}</div>`;
+        }
+
+        function completeAd() {
+            clearInterval(adTimerInterval);
+            adCompleted = true;
+            
+            // Show completion message
+            document.getElementById('adCompleteMessage').classList.add('active');
+            
+            // Show top-right close button
+            document.getElementById('adCompleteCloseBtn').style.display = 'flex';
+            
+            // Add points to user
+            addPoints(adPoints);
+            
+            // Increment ad count
+            incrementAdCount();
+            
+            // Add to transaction history
+            const transactionList = document.getElementById('transaction-list');
+            const li = document.createElement('li');
+            li.className = 'p-3 rounded-lg bg-white border border-gray-200 flex justify-between items-center';
+            li.innerHTML = `
+                <div class="flex-1">
+                    <p class="font-semibold text-gray-800 text-sm">Earned ${adPoints} points from Ad</p>
+                    <p class="text-gray-500 text-xs mt-1">${new Date().toISOString().split('T')[0]}</p>
+                </div>
+                <span class="text-green-500 font-bold text-sm ml-2">+${adPoints} pts</span>
+            `;
+            if (transactionList) {
+                transactionList.prepend(li);
+            }
+            
+            showToast(`🎉 You earned ${adPoints} points from watching ad!`, 'success');
+        }
+
+        function closeAdTimer() {
+            clearInterval(adTimerInterval);
+            document.getElementById('adTimerModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            // Hide top-right close button
+            document.getElementById('adCompleteCloseBtn').style.display = 'none';
+            
+            // Agar timer complete nahi hua aur user close kare to points nahi dena
+            if (!adCompleted && adSeconds > 0) {
+                showToast('Ad not completed. No points awarded.', 'error');
+            }
+        }
+
+        // Ad Limit Management
+        function checkAdLimit() {
+            const user = auth.currentUser;
+            if (!user) return true;
+            
+            const today = new Date().toDateString();
+            const adHistory = JSON.parse(localStorage.getItem(`adHistory_${user.uid}`) || '{}');
+            
+            if (adHistory.date !== today) {
+                adHistory.date = today;
+                adHistory.count = 0;
+                localStorage.setItem(`adHistory_${user.uid}`, JSON.stringify(adHistory));
+            }
+            
+            return adHistory.count < 20; // 20 ads per day limit
+        }
+
+        function incrementAdCount() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const adHistory = JSON.parse(localStorage.getItem(`adHistory_${user.uid}`) || '{}');
+            adHistory.count = (adHistory.count || 0) + 1;
+            localStorage.setItem(`adHistory_${user.uid}`, JSON.stringify(adHistory));
+        }
+
+        // Rest of the existing code remains exactly the same...
+        // [All the existing JavaScript code from the previous implementation]
+        // Only the ad-related functions have been updated above
 
         // ✅ FIXED: Minimum conversion points variable
         let minConvertPoints = 10;
@@ -3319,6 +3782,7 @@
             const aboutModal = document.getElementById('aboutModal');
             const privacyModal = document.getElementById('privacyModal');
             const withdrawalSuccessModal = document.getElementById('withdrawalSuccessModal');
+            const adTimerModal = document.getElementById('adTimerModal');
             
             if (event.target === aboutModal) {
                 closeAbout();
@@ -3328,6 +3792,9 @@
             }
             if (event.target === withdrawalSuccessModal) {
                 closeWithdrawalSuccessModal();
+            }
+            if (event.target === adTimerModal) {
+                closeAdTimer();
             }
         }
 
