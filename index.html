@@ -12,6 +12,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
+    <!-- 🔥 POPUNDER AD CODE -->
+    <script type='text/javascript' src='//pl27834365.effectivegatecpm.com/bf/31/b1/bf31b17fbda37d79ca47d71d47b2d1b1.js'></script>
+    
     <style>
         /* Professional Premium 3D Wheel Styling */
         .wheel-container { 
@@ -930,6 +933,113 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
+        /* NEW: Iframe Ad Overlay with Timer */
+        .ad-iframe-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            background: #000;
+        }
+
+        .ad-iframe-overlay.active {
+            display: block;
+        }
+
+        .ad-iframe-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .ad-iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .timer-overlay {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 10001;
+            pointer-events: none;
+        }
+
+        .timer-overlay.completed {
+            pointer-events: auto;
+        }
+
+        .timer-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: timerPulse 2s ease-in-out infinite;
+            min-width: 70px;
+        }
+
+        @keyframes timerPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); }
+            50% { transform: scale(1.03); box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6); }
+        }
+
+        .timer-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2px;
+            line-height: 1;
+        }
+
+        .timer-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cut-button {
+            display: none;
+            background: linear-gradient(135deg, #00b894, #55efc4);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 184, 148, 0.5);
+            transition: all 0.3s ease;
+            margin-top: 6px;
+            animation: buttonAppear 0.5s ease;
+        }
+
+        .cut-button.visible {
+            display: inline-block;
+        }
+
+        .cut-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 184, 148, 0.7);
+        }
+
+        .cut-button:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        @keyframes buttonAppear {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         /* Ad Button Styling - Enhanced UX */
         .ad-task-btn {
             background: linear-gradient(135deg, #ff6b9d, #c44569);
@@ -1019,11 +1129,11 @@
     <div id="adTimerModal" class="ad-timer-modal">
         <div class="ad-timer-content">
             <div class="ad-timer-header">
-                <h2 class="text-xl font-bold">🎬 Watch Ad to Earn</h2>
-                <div class="ad-timer-close" onclick="closeAdTimer()">×</div>
+                <h2 class="text-xl font-bold" id="adModalTitle">🎬 Watch Ad to Earn</h2>
+                <div class="ad-timer-close" onclick="closeAdTimer()" id="adModalCloseX">×</div>
             </div>
             <div class="ad-timer-body">
-                <div class="timer-display" id="adTimerDisplay">10</div>
+                <div class="timer-display" id="adTimerDisplay">20</div>
                 
                 <div class="timer-progress">
                     <div class="timer-progress-fill" id="adTimerProgress"></div>
@@ -1032,7 +1142,6 @@
                 <div class="ad-container">
                     <div class="ad-placeholder">📱</div>
                     <div class="ad-text" id="adContentText">Advertisement Loading...</div>
-                    <!-- Adsterra ya kisi ad network ka ad yahan load hoga -->
                     <div id="adContainer"></div>
                 </div>
 
@@ -1041,20 +1150,36 @@
                 </div>
 
                 <div class="ad-warning">
-                    ⚠️ Don't close this window! Points will only be awarded if you watch the complete ad.
+                    ⚠️ Wait for the timer to complete to claim your reward!
                 </div>
 
                 <div class="ad-complete-message" id="adCompleteMessage">
                     <div style="font-size: 36px; margin-bottom: 8px;">🎉</div>
                     <h3 style="font-size: 18px; margin-bottom: 6px; font-weight: 700;">Congratulations!</h3>
-                    <p style="font-size: 15px; margin-bottom: 12px;">You earned <strong>100 Points</strong>!</p>
+                    <p style="font-size: 15px; margin-bottom: 12px;">You earned <strong id="earnedPointsText">100</strong> Points!</p>
                     <button onclick="closeAdTimer()" class="btn-primary" style="padding: 10px 24px; font-size: 14px; border-radius: 8px;">
-                        Continue Earning
+                        Claim Reward
                     </button>
                 </div>
             </div>
-            <!-- Close Button - Screen Top Right -->
+            <!-- Close Button - Screen Top Right (Cut Button) -->
             <button class="modal-close-btn" id="adCompleteCloseBtn" onclick="closeAdTimer()" title="Close" style="display: none;">×</button>
+        </div>
+    </div>
+
+    <!-- NEW: Iframe Ad Overlay for Special Offers -->
+    <div id="adIframeOverlay" class="ad-iframe-overlay">
+        <div class="ad-iframe-container">
+            <iframe id="adIframe" src="about:blank"></iframe>
+        </div>
+        <div class="timer-overlay" id="timerOverlay">
+            <div class="timer-box">
+                <div class="timer-number" id="overlayTimerDisplay">20</div>
+                <div class="timer-text">Please wait...</div>
+            </div>
+            <button class="cut-button" id="cutButton" onclick="claimSpecialOfferReward()">
+                Cut ✂️
+            </button>
         </div>
     </div>
 
@@ -1226,6 +1351,20 @@
                 </div>
             </div>
 
+            <!-- 🎯 BANNER AD 1 - After Header -->
+            <div class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 mb-4 flex justify-center items-center" style="min-height: 60px;">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '45ba62cb734a8691bd7c8436fec7af20',
+                        'format' : 'iframe',
+                        'height' : 50,
+                        'width' : 320,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/45ba62cb734a8691bd7c8436fec7af20/invoke.js"></script>
+            </div>
+
             <!-- Home Section -->
             <div id="home" class="app-section active">
                 <!-- Task List -->
@@ -1234,22 +1373,40 @@
                         <i class="fas fa-tasks mr-2 text-blue-500"></i> Earn Points
                     </h3>
                     <div class="grid grid-cols-2 gap-3 mb-6">
-                        <!-- UPDATED: Watch Ads Button with new styling -->
-                        <button onclick="startAdWithTimer()" class="ad-task-btn">
+                        <!-- UPDATED: Watch Ads Button with Smartlink -->
+                        <button onclick="startSmartlinkAd()" class="ad-task-btn">
                             <i class="fas fa-play-circle"></i>
                             <span class="font-semibold">Watch Ads</span>
                             <span class="text-sm opacity-90 mt-1">Earn 100 Points</span>
+                            <span class="text-xs opacity-75 mt-1" id="watchAdsCount">0/20 today</span>
                         </button>
                         
-                        <button class="task-btn bg-gradient-to-br from-gray-400 to-gray-500 text-white cursor-not-allowed" disabled>
-                            <i class="fas fa-tasks text-2xl mb-2"></i>
-                            <span class="font-semibold text-sm">Coming Soon</span>
+                        <!-- Special Offers Button -->
+                        <button onclick="startSpecialOffer()" class="task-btn bg-gradient-to-br from-green-400 to-green-600 text-white flex flex-col items-center justify-center">
+                            <i class="fas fa-gift text-2xl mb-2"></i>
+                            <span class="font-semibold text-sm">Special Offers</span>
+                            <span class="text-xs opacity-90 mt-1">200 Points</span>
+                            <span class="text-xs opacity-75 mt-1" id="specialOffersCount">0/30 today</span>
                         </button>
                         
                         <button class="task-btn bg-gradient-to-br from-indigo-400 to-indigo-600 text-white">
                             <i class="fas fa-share-alt text-2xl mb-2"></i>
                             <span class="font-semibold text-sm">Refer Friends</span>
                         </button>
+                    </div>
+                    
+                    <!-- 🎯 BANNER AD 2 - Before Spin Wheel -->
+                    <div class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 mb-4 flex justify-center items-center" style="min-height: 60px;">
+                        <script type="text/javascript">
+                            atOptions = {
+                                'key' : '45ba62cb734a8691bd7c8436fec7af20',
+                                'format' : 'iframe',
+                                'height' : 50,
+                                'width' : 320,
+                                'params' : {}
+                            };
+                        </script>
+                        <script type="text/javascript" src="//www.highperformanceformat.com/45ba62cb734a8691bd7c8436fec7af20/invoke.js"></script>
                     </div>
                     
                     <!-- Professional Premium Spin Wheel -->
@@ -1361,6 +1518,20 @@
                         </button>
                     </div>
                     
+                    <!-- 🎯 BANNER AD 3 - After Spin Wheel -->
+                    <div class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 mt-6 mb-6 flex justify-center items-center" style="min-height: 60px;">
+                        <script type="text/javascript">
+                            atOptions = {
+                                'key' : '45ba62cb734a8691bd7c8436fec7af20',
+                                'format' : 'iframe',
+                                'height' : 50,
+                                'width' : 320,
+                                'params' : {}
+                            };
+                        </script>
+                        <script type="text/javascript" src="//www.highperformanceformat.com/45ba62cb734a8691bd7c8436fec7af20/invoke.js"></script>
+                    </div>
+                    
                     <!-- Referral System - UPDATED WITH UNIQUE CODES -->
                     <div class="referral mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
                         <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center justify-center">
@@ -1425,6 +1596,20 @@
                         </li>
                     </ul>
                 </div>
+                
+                <!-- 🎯 BANNER AD 4 - After Notifications -->
+                <div class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 mt-4 flex justify-center items-center" style="min-height: 60px;">
+                    <script type="text/javascript">
+                        atOptions = {
+                            'key' : '45ba62cb734a8691bd7c8436fec7af20',
+                            'format' : 'iframe',
+                            'height' : 50,
+                            'width' : 320,
+                            'params' : {}
+                        };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/45ba62cb734a8691bd7c8436fec7af20/invoke.js"></script>
+                </div>
             </div>
 
             <!-- Convert Section - FIXED -->
@@ -1460,6 +1645,20 @@
                         <!-- ✅ FIXED: Dynamic minimum points text -->
                         <p class="text-xs text-gray-600 mt-3 text-center" id="min-convert-text">Minimum conversion: 10 points</p>
                     </div>
+                </div>
+                
+                <!-- 🎯 BANNER AD 6 - After Convert Section -->
+                <div class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 mt-4 flex justify-center items-center" style="min-height: 60px;">
+                    <script type="text/javascript">
+                        atOptions = {
+                            'key' : '45ba62cb734a8691bd7c8436fec7af20',
+                            'format' : 'iframe',
+                            'height' : 50,
+                            'width' : 320,
+                            'params' : {}
+                        };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/45ba62cb734a8691bd7c8436fec7af20/invoke.js"></script>
                 </div>
             </div>
 
@@ -1543,6 +1742,20 @@
                         </ul>
                     </div>
                 </div>
+                
+                <!-- 🎯 BANNER AD 7 - After Wallet Section -->
+                <div class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 mt-4 flex justify-center items-center" style="min-height: 60px;">
+                    <script type="text/javascript">
+                        atOptions = {
+                            'key' : '45ba62cb734a8691bd7c8436fec7af20',
+                            'format' : 'iframe',
+                            'height' : 50,
+                            'width' : 320,
+                            'params' : {}
+                        };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/45ba62cb734a8691bd7c8436fec7af20/invoke.js"></script>
+                </div>
             </div>
 
             <!-- Profile Section -->
@@ -1615,6 +1828,20 @@
                             </button>
                         </div>
                     </div>
+                </div>
+                
+                <!-- 🎯 BANNER AD 5 - In Profile Section -->
+                <div class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 mt-4 flex justify-center items-center" style="min-height: 60px;">
+                    <script type="text/javascript">
+                        atOptions = {
+                            'key' : '45ba62cb734a8691bd7c8436fec7af20',
+                            'format' : 'iframe',
+                            'height' : 50,
+                            'width' : 320,
+                            'params' : {}
+                        };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/45ba62cb734a8691bd7c8436fec7af20/invoke.js"></script>
                 </div>
             </div>
         </div>
@@ -1964,30 +2191,127 @@
 
         // Ad Timer Variables
         let adTimerInterval;
-        let adSeconds = 10;
+        let adSeconds = 20;
         let adCompleted = false;
         let adPoints = 100;
+        let currentAdType = 'smartlink'; // 'smartlink' or 'special'
 
-        // NEW: Ad Timer Functions
-        function startAdWithTimer() {
-            if (!checkAdLimit()) {
-                showToast('Daily ad limit reached! Come back tomorrow.', 'error');
+        // NEW: Smartlink Ad Function
+        function startSmartlinkAd() {
+            if (!checkSmartlinkLimit()) {
+                showToast('Daily Watch Ads limit reached (20/20)! Come back tomorrow.', 'error');
                 return;
             }
 
+            currentAdType = 'smartlink';
+            adPoints = 100;
+            
+            // Open Smartlink in new tab
+            window.open('https://www.effectivegatecpm.com/ta05x109vh?key=94a406f2d0887acfb76b86ad6bef9360', '_blank');
+            
+            // Start 20 second timer
+            startAdTimerWithType('🎬 Watch Ad to Earn', 100, 'smartlink');
+        }
+
+        // NEW: Special Offers Function - With Iframe Overlay
+        function startSpecialOffer() {
+            if (!checkSpecialOfferLimit()) {
+                showToast('Daily Special Offers limit reached (30/30)! Come back tomorrow.', 'error');
+                return;
+            }
+
+            currentAdType = 'special';
+            adPoints = 200;
+            
+            // Load ad in iframe and show overlay
+            const adUrl = 'https://www.effectivegatecpm.com/ta05x109vh?key=94a406f2d0887acfb76b86ad6bef9360';
+            document.getElementById('adIframe').src = adUrl;
+            document.getElementById('adIframeOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Start 20 second timer with overlay
+            startSpecialOfferTimer();
+        }
+
+        // Special Offer Timer with Overlay
+        let specialOfferTimerInterval;
+        let specialOfferSeconds = 20;
+
+        function startSpecialOfferTimer() {
+            specialOfferSeconds = 20;
+            document.getElementById('overlayTimerDisplay').textContent = specialOfferSeconds;
+            document.getElementById('cutButton').classList.remove('visible');
+            document.getElementById('timerOverlay').classList.remove('completed');
+            
+            clearInterval(specialOfferTimerInterval);
+            
+            specialOfferTimerInterval = setInterval(() => {
+                specialOfferSeconds--;
+                document.getElementById('overlayTimerDisplay').textContent = specialOfferSeconds;
+                
+                if (specialOfferSeconds <= 0) {
+                    clearInterval(specialOfferTimerInterval);
+                    // Timer complete - show Cut button
+                    document.getElementById('cutButton').classList.add('visible');
+                    document.getElementById('timerOverlay').classList.add('completed');
+                }
+            }, 1000);
+        }
+
+        function claimSpecialOfferReward() {
+            clearInterval(specialOfferTimerInterval);
+            
+            // Award points
+            addPoints(adPoints);
+            incrementSpecialOfferCount();
+            updateAdCounts();
+            
+            // Add to transaction history
+            const transactionList = document.getElementById('transaction-list');
+            const li = document.createElement('li');
+            li.className = 'p-3 rounded-lg bg-white border border-gray-200 flex justify-between items-center';
+            li.innerHTML = `
+                <div class="flex-1">
+                    <p class="font-semibold text-gray-800 text-sm">Earned ${adPoints} points from Special Offer</p>
+                    <p class="text-gray-500 text-xs mt-1">${new Date().toISOString().split('T')[0]}</p>
+                </div>
+                <span class="text-green-500 font-bold text-sm ml-2">+${adPoints} pts</span>
+            `;
+            if (transactionList) {
+                transactionList.prepend(li);
+            }
+            
+            showToast(`🎉 You earned ${adPoints} points!`, 'success');
+            
+            // Close overlay
+            closeSpecialOfferOverlay();
+        }
+
+        function closeSpecialOfferOverlay() {
+            document.getElementById('adIframeOverlay').classList.remove('active');
+            document.getElementById('adIframe').src = 'about:blank';
+            document.body.style.overflow = 'auto';
+            clearInterval(specialOfferTimerInterval);
+        }
+
+        function startAdTimerWithType(title, points, type) {
             // Reset ad state
-            adSeconds = 10;
+            adSeconds = 20;
             adCompleted = false;
             
             // Show ad timer modal
             document.getElementById('adTimerModal').classList.add('active');
             document.body.style.overflow = 'hidden';
             
-            // Reset UI
+            // Update UI
+            document.getElementById('adModalTitle').textContent = title;
+            document.getElementById('rewardPoints').textContent = points;
             document.getElementById('adTimerDisplay').textContent = adSeconds;
             document.getElementById('adTimerProgress').style.width = '0%';
             document.getElementById('adCompleteMessage').classList.remove('active');
             document.getElementById('adContentText').textContent = 'Advertisement Loading...';
+            document.getElementById('adCompleteCloseBtn').style.display = 'none';
+            document.getElementById('adModalCloseX').style.display = 'block';
             
             // Load random ad content
             loadRandomAdContent();
@@ -2006,11 +2330,11 @@
                 document.getElementById('adTimerDisplay').textContent = adSeconds;
                 
                 // Update progress bar
-                const progress = ((10 - adSeconds) / 10) * 100;
+                const progress = ((20 - adSeconds) / 20) * 100;
                 document.getElementById('adTimerProgress').style.width = progress + '%';
                 
                 // Change ad content periodically
-                if (adSeconds % 3 === 0) {
+                if (adSeconds % 4 === 0) {
                     loadRandomAdContent();
                 }
                 
@@ -2043,25 +2367,35 @@
             clearInterval(adTimerInterval);
             adCompleted = true;
             
-            // Show completion message
-            document.getElementById('adCompleteMessage').classList.add('active');
-            
-            // Show top-right close button
+            // Hide X button, show cut button
+            document.getElementById('adModalCloseX').style.display = 'none';
             document.getElementById('adCompleteCloseBtn').style.display = 'flex';
+            
+            // Show completion message
+            document.getElementById('earnedPointsText').textContent = adPoints;
+            document.getElementById('adCompleteMessage').classList.add('active');
             
             // Add points to user
             addPoints(adPoints);
             
-            // Increment ad count
-            incrementAdCount();
+            // Increment ad count based on type
+            if (currentAdType === 'smartlink') {
+                incrementSmartlinkCount();
+            } else if (currentAdType === 'special') {
+                incrementSpecialOfferCount();
+            }
+            
+            // Update display counts
+            updateAdCounts();
             
             // Add to transaction history
             const transactionList = document.getElementById('transaction-list');
             const li = document.createElement('li');
             li.className = 'p-3 rounded-lg bg-white border border-gray-200 flex justify-between items-center';
+            const adTypeName = currentAdType === 'smartlink' ? 'Watch Ads' : 'Special Offer';
             li.innerHTML = `
                 <div class="flex-1">
-                    <p class="font-semibold text-gray-800 text-sm">Earned ${adPoints} points from Ad</p>
+                    <p class="font-semibold text-gray-800 text-sm">Earned ${adPoints} points from ${adTypeName}</p>
                     <p class="text-gray-500 text-xs mt-1">${new Date().toISOString().split('T')[0]}</p>
                 </div>
                 <span class="text-green-500 font-bold text-sm ml-2">+${adPoints} pts</span>
@@ -2070,7 +2404,7 @@
                 transactionList.prepend(li);
             }
             
-            showToast(`🎉 You earned ${adPoints} points from watching ad!`, 'success');
+            showToast(`🎉 You earned ${adPoints} points!`, 'success');
         }
 
         function closeAdTimer() {
@@ -2078,39 +2412,110 @@
             document.getElementById('adTimerModal').classList.remove('active');
             document.body.style.overflow = 'auto';
             
-            // Hide top-right close button
+            // Reset buttons
             document.getElementById('adCompleteCloseBtn').style.display = 'none';
+            document.getElementById('adModalCloseX').style.display = 'block';
             
             // Agar timer complete nahi hua aur user close kare to points nahi dena
             if (!adCompleted && adSeconds > 0) {
-                showToast('Ad not completed. No points awarded.', 'error');
+                showToast('Timer not completed. No points awarded.', 'error');
             }
         }
 
-        // Ad Limit Management
-        function checkAdLimit() {
+        // Smartlink Ad Limit Management (20 per day)
+        function checkSmartlinkLimit() {
             const user = auth.currentUser;
             if (!user) return true;
             
             const today = new Date().toDateString();
-            const adHistory = JSON.parse(localStorage.getItem(`adHistory_${user.uid}`) || '{}');
+            const smartlinkHistory = JSON.parse(localStorage.getItem(`smartlink_${user.uid}`) || '{}');
             
-            if (adHistory.date !== today) {
-                adHistory.date = today;
-                adHistory.count = 0;
-                localStorage.setItem(`adHistory_${user.uid}`, JSON.stringify(adHistory));
+            if (smartlinkHistory.date !== today) {
+                smartlinkHistory.date = today;
+                smartlinkHistory.count = 0;
+                localStorage.setItem(`smartlink_${user.uid}`, JSON.stringify(smartlinkHistory));
             }
             
-            return adHistory.count < 20; // 20 ads per day limit
+            return smartlinkHistory.count < 20;
         }
 
-        function incrementAdCount() {
+        function incrementSmartlinkCount() {
             const user = auth.currentUser;
             if (!user) return;
             
-            const adHistory = JSON.parse(localStorage.getItem(`adHistory_${user.uid}`) || '{}');
-            adHistory.count = (adHistory.count || 0) + 1;
-            localStorage.setItem(`adHistory_${user.uid}`, JSON.stringify(adHistory));
+            const smartlinkHistory = JSON.parse(localStorage.getItem(`smartlink_${user.uid}`) || '{}');
+            smartlinkHistory.count = (smartlinkHistory.count || 0) + 1;
+            localStorage.setItem(`smartlink_${user.uid}`, JSON.stringify(smartlinkHistory));
+        }
+
+        function getSmartlinkCount() {
+            const user = auth.currentUser;
+            if (!user) return 0;
+            
+            const today = new Date().toDateString();
+            const smartlinkHistory = JSON.parse(localStorage.getItem(`smartlink_${user.uid}`) || '{}');
+            
+            if (smartlinkHistory.date !== today) {
+                return 0;
+            }
+            
+            return smartlinkHistory.count || 0;
+        }
+
+        // Special Offers Limit Management (30 per day)
+        function checkSpecialOfferLimit() {
+            const user = auth.currentUser;
+            if (!user) return true;
+            
+            const today = new Date().toDateString();
+            const specialHistory = JSON.parse(localStorage.getItem(`specialOffer_${user.uid}`) || '{}');
+            
+            if (specialHistory.date !== today) {
+                specialHistory.date = today;
+                specialHistory.count = 0;
+                localStorage.setItem(`specialOffer_${user.uid}`, JSON.stringify(specialHistory));
+            }
+            
+            return specialHistory.count < 30;
+        }
+
+        function incrementSpecialOfferCount() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const specialHistory = JSON.parse(localStorage.getItem(`specialOffer_${user.uid}`) || '{}');
+            specialHistory.count = (specialHistory.count || 0) + 1;
+            localStorage.setItem(`specialOffer_${user.uid}`, JSON.stringify(specialHistory));
+        }
+
+        function getSpecialOfferCount() {
+            const user = auth.currentUser;
+            if (!user) return 0;
+            
+            const today = new Date().toDateString();
+            const specialHistory = JSON.parse(localStorage.getItem(`specialOffer_${user.uid}`) || '{}');
+            
+            if (specialHistory.date !== today) {
+                return 0;
+            }
+            
+            return specialHistory.count || 0;
+        }
+
+        // Update ad counts display
+        function updateAdCounts() {
+            const smartlinkCount = getSmartlinkCount();
+            const specialCount = getSpecialOfferCount();
+            
+            const watchAdsElement = document.getElementById('watchAdsCount');
+            const specialOffersElement = document.getElementById('specialOffersCount');
+            
+            if (watchAdsElement) {
+                watchAdsElement.textContent = `${smartlinkCount}/20 today`;
+            }
+            if (specialOffersElement) {
+                specialOffersElement.textContent = `${specialCount}/30 today`;
+            }
         }
 
         // Rest of the existing code remains exactly the same...
@@ -3803,6 +4208,8 @@
             if (user) {
                 // User is signed in
                 showApp();
+                // Update ad counts
+                updateAdCounts();
             } else {
                 // User is signed out
                 document.getElementById('app').classList.remove('active');
