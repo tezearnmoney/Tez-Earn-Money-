@@ -1119,9 +1119,92 @@
             backdrop-filter: blur(10px);
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
         }
+
+        /* Simple Welcome Bonus Popup */
+        .welcome-bonus-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-bonus-popup.active {
+            display: flex;
+        }
+
+        .welcome-bonus-content {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            max-width: 90%;
+            width: 350px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .bonus-icon {
+            font-size: 60px;
+            color: #f59e0b;
+            margin-bottom: 15px;
+        }
+
+        .bonus-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .bonus-amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #10b981;
+            margin: 15px 0;
+        }
+
+        .bonus-message {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .bonus-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .bonus-button:hover {
+            background: #2563eb;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 font-sans safe-area-bottom">
+    <!-- Simple Welcome Bonus Popup -->
+    <div id="welcomeBonusPopup" class="welcome-bonus-popup">
+        <div class="welcome-bonus-content">
+            <div class="bonus-icon">
+                <i class="fas fa-gift"></i>
+            </div>
+            <h1 class="bonus-title">Welcome Bonus!</h1>
+            <div class="bonus-amount">₹5 + 100 Points</div>
+            <p class="bonus-message">Your account has been credited with welcome bonus</p>
+            <button id="closeBonusPopup" class="bonus-button">OK</button>
+        </div>
+    </div>
+
     <!-- Toast Container -->
     <div id="toast-container"></div>
 
@@ -2518,10 +2601,6 @@
             }
         }
 
-        // Rest of the existing code remains exactly the same...
-        // [All the existing JavaScript code from the previous implementation]
-        // Only the ad-related functions have been updated above
-
         // ✅ FIXED: Minimum conversion points variable
         let minConvertPoints = 10;
 
@@ -2807,76 +2886,59 @@
             }
         }
 
-        // ✅ NAYA FUNCTION: Starting bonus dene ke liye - Admin panel se values read karta hai
-        function giveStartingBonus(userId, userData) {
-            console.log('🎁 Fetching starting bonus settings from admin panel...');
+        // ✅ NAYA FUNCTION: Welcome bonus dene ke liye
+        function giveWelcomeBonus(userId) {
+            console.log('🎁 Giving welcome bonus to new user:', userId);
             
-            // ✅ Admin panel ke settings se bonus values fetch karo
-            db.collection('settings').doc('app').get()
-                .then((settingsDoc) => {
-                    let startingBonusPoints = 150; // Default value
-                    let startingBonusBalance = 15.00; // Default value
-                    
-                    // ✅ Agar admin ne settings set ki hain to unhe use karo
-                    if (settingsDoc.exists) {
-                        const settings = settingsDoc.data();
-                        startingBonusPoints = settings.startingBonusPoints || 150;
-                        startingBonusBalance = settings.startingBonusCash || 15.00;
-                        console.log('✅ Admin settings fetched:', { startingBonusPoints, startingBonusBalance });
-                    } else {
-                        console.log('⚠️ Admin settings not found, using default values');
-                    }
-                    
-                    console.log('🎁 Giving starting bonus to new user:', userId);
-                    
-                    // ✅ User ko bonus do
-                    return db.collection('users').doc(userId).update({
-                        points: startingBonusPoints,
-                        balance: startingBonusBalance,
-                        hasReceivedStartingBonus: true,
-                        startingBonusGivenAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    }).then(() => {
-                        console.log('✅ Starting bonus given successfully');
-                        
-                        // Update local state
-                        userData.points = startingBonusPoints;
-                        userData.balance = startingBonusBalance;
-                        updateDisplays();
-                        
-                        // Add to transaction history
-                        const transactionList = document.getElementById('transaction-list');
-                        const li = document.createElement('li');
-                        li.className = 'p-3 rounded-lg bg-white border border-gray-200 flex justify-between items-center';
-                        li.innerHTML = `
-                            <div class="flex-1">
-                                <p class="font-semibold text-gray-800 text-sm">🎁 Welcome Bonus!</p>
-                                <p class="text-gray-500 text-xs mt-1">${new Date().toISOString().split('T')[0]}</p>
-                            </div>
-                            <span class="text-green-500 font-bold text-sm ml-2">+${startingBonusPoints} pts</span>
-                        `;
-                        if (transactionList) {
-                            transactionList.prepend(li);
-                        }
-                        
-                        showToast(`🎉 Welcome! You received ${startingBonusPoints} points (₹${startingBonusBalance}) starting bonus!`, 'success');
-                    });
-                })
-                .catch((error) => {
-                    console.error('❌ Error giving starting bonus:', error);
-                    showToast('Error giving starting bonus', 'error');
-                });
+            // User ko ₹5 aur 100 points do
+            return db.collection('users').doc(userId).update({
+                points: 100,
+                balance: 5.00,
+                hasReceivedWelcomeBonus: true,
+                welcomeBonusGivenAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                console.log('✅ Welcome bonus given successfully');
+                
+                // Update local state
+                userData.points = 100;
+                userData.balance = 5.00;
+                updateDisplays();
+                
+                // Show welcome bonus popup
+                setTimeout(() => {
+                    document.getElementById('welcomeBonusPopup').classList.add('active');
+                }, 1000);
+                
+                // Add to transaction history
+                const transactionList = document.getElementById('transaction-list');
+                const li = document.createElement('li');
+                li.className = 'p-3 rounded-lg bg-white border border-gray-200 flex justify-between items-center';
+                li.innerHTML = `
+                    <div class="flex-1">
+                        <p class="font-semibold text-gray-800 text-sm">🎁 Welcome Bonus!</p>
+                        <p class="text-gray-500 text-xs mt-1">${new Date().toISOString().split('T')[0]}</p>
+                    </div>
+                    <span class="text-green-500 font-bold text-sm ml-2">+100 pts</span>
+                `;
+                if (transactionList) {
+                    transactionList.prepend(li);
+                }
+                
+                showToast('🎉 Welcome! You received ₹5 and 100 points bonus!', 'success');
+            }).catch((error) => {
+                console.error('❌ Error giving welcome bonus:', error);
+            });
         }
 
-        // ✅ FIXED: Load user data function - Starting bonus control
+        // ✅ FIXED: Load user data function - Welcome bonus control
         function loadUserData(userId) {
             db.collection('users').doc(userId).get()
                 .then((doc) => {
                     if (doc.exists) {
                         const userDataFromFirestore = doc.data();
                         
-                        // ✅ NAYA CODE: Check if user already received starting bonus
-                        const hasReceivedStartingBonus = userDataFromFirestore.hasReceivedStartingBonus || false;
+                        // ✅ NAYA CODE: Check if user already received welcome bonus
+                        const hasReceivedWelcomeBonus = userDataFromFirestore.hasReceivedWelcomeBonus || false;
                         
                         // Update UI with user data
                         document.getElementById('user-name').textContent = userDataFromFirestore.name;
@@ -2893,9 +2955,9 @@
                         // ✅ NAYA CODE: Referral code setup karo
                         setupUserReferralCode(userId, userDataFromFirestore);
                         
-                        // ✅ NAYA CODE: Agar starting bonus nahi mila hai to do
-                        if (!hasReceivedStartingBonus) {
-                            giveStartingBonus(userId, userDataFromFirestore);
+                        // ✅ NAYA CODE: Agar welcome bonus nahi mila hai to do
+                        if (!hasReceivedWelcomeBonus) {
+                            giveWelcomeBonus(userId);
                         } else {
                             updateDisplays();
                         }
@@ -2903,14 +2965,14 @@
                         // Initialize spin limit system
                         initializeSpinLimit();
                     } else {
-                        // ✅ FIXED: If document doesn't exist, create it with NO starting bonus initially
+                        // ✅ FIXED: If document doesn't exist, create it with NO welcome bonus initially
                         const user = auth.currentUser;
                         return db.collection('users').doc(userId).set({
                             name: user.displayName || 'User',
                             email: user.email,
                             points: 0, // ✅ Starting with 0 points
                             balance: 0.00, // ✅ Starting with 0 balance
-                            hasReceivedStartingBonus: false, // ✅ NAYA FIELD: Starting bonus status
+                            hasReceivedWelcomeBonus: false, // ✅ NAYA FIELD: Welcome bonus status
                             referralCode: generateReferralCode(userId, user.displayName || 'User'),
                             referralLink: `${window.location.origin}${window.location.pathname}?ref=${generateReferralCode(userId, user.displayName || 'User')}`,
                             referrals: 0,
@@ -2922,13 +2984,8 @@
                             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                             level: 'Bronze'
                         }).then(() => {
-                            // ✅ NAYA CODE: Ab starting bonus do
-                            giveStartingBonus(userId, {
-                                name: user.displayName || 'User',
-                                email: user.email,
-                                points: 0,
-                                balance: 0.00
-                            });
+                            // ✅ NAYA CODE: Ab welcome bonus do
+                            giveWelcomeBonus(userId);
                         });
                     }
                 })
@@ -3027,6 +3084,11 @@
             
             // ✅ NAYA: Check for referral in URL
             checkReferralFromURL();
+
+            // ✅ NAYA: Welcome bonus popup close button
+            document.getElementById('closeBonusPopup').addEventListener('click', function() {
+                document.getElementById('welcomeBonusPopup').classList.remove('active');
+            });
         });
 
         // Wheel segments with their point values and angles - DYNAMIC NOW
@@ -3560,7 +3622,7 @@
                 });
         }
 
-        // ✅ FIXED: Signup function - Starting bonus control
+        // ✅ FIXED: Signup function - Welcome bonus control
         document.getElementById('signup-btn').addEventListener('click', function() {
             const name = document.getElementById('signup-name').value;
             const email = document.getElementById('signup-email').value;
@@ -3619,13 +3681,13 @@
                     // ✅ NAYA: Referral code generate karo
                     const referralCode = generateReferralCode(user.uid, name);
                     
-                    // ✅ FIXED: Save user data to Firestore WITHOUT starting bonus initially
+                    // ✅ FIXED: Save user data to Firestore WITHOUT welcome bonus initially
                     return db.collection('users').doc(user.uid).set({
                         name: name,
                         email: email,
                         points: 0, // ✅ Start with 0 points
                         balance: 0.00, // ✅ Start with 0 balance
-                        hasReceivedStartingBonus: false, // ✅ NAYA FIELD: Bonus not given yet
+                        hasReceivedWelcomeBonus: false, // ✅ NAYA FIELD: Bonus not given yet
                         referralCode: referralCode,
                         referralLink: `${window.location.origin}${window.location.pathname}?ref=${referralCode}`,
                         referrals: 0,
@@ -4188,6 +4250,7 @@
             const privacyModal = document.getElementById('privacyModal');
             const withdrawalSuccessModal = document.getElementById('withdrawalSuccessModal');
             const adTimerModal = document.getElementById('adTimerModal');
+            const welcomeBonusPopup = document.getElementById('welcomeBonusPopup');
             
             if (event.target === aboutModal) {
                 closeAbout();
@@ -4200,6 +4263,9 @@
             }
             if (event.target === adTimerModal) {
                 closeAdTimer();
+            }
+            if (event.target === welcomeBonusPopup) {
+                welcomeBonusPopup.classList.remove('active');
             }
         }
 
